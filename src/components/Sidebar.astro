@@ -1,0 +1,254 @@
+---
+const { pathname } = Astro.url;
+
+const navigation = [
+  {
+    label: "Background",
+    link: "/case-study/",
+    anchors: [
+      { label: "Introduction", anchor: "#intro" },
+      { label: "Cloud Service Models", anchor: "#cloud-service-models" },
+      {
+        label: "Modern Web Application Structure",
+        anchor: "#modern-web-application-structure",
+      },
+      {
+        label: "The Use Case for BaaS",
+        anchor: "#use-case-for-baas",
+      },
+    ],
+  },
+  {
+    label: "What is Pendulum?",
+    link: "/case-study/what-is-pendulum/",
+    anchors: [
+      { label: "Philosophy", anchor: "#philosophy" },
+      { label: "Core Components", anchor: "#core-components" },
+    ],
+  },
+  {
+    label: "Using Pendulum",
+    link: "/case-study/using-pendulum/",
+    anchors: [
+      { label: "Local Development", anchor: "#local-development" },
+      { label: "Production", anchor: "#production" },
+    ],
+  },
+  {
+    label: "Design Decisions & Implementation Challenges",
+    link: "/case-study/design-and-challenges/",
+    anchors: [
+      { label: "The Database — SQL vs. NoSQL", anchor: "#the-database" },
+      { label: "Data Validation", anchor: "#data-validation" },
+      { label: "Enabling Reactivity", anchor: "#enabling-reactivity" },
+      { label: "Backend Design", anchor: "#backend-design" },
+      {
+        label: "Handling Reactivity in the Frontend",
+        anchor: "#frontend-reactivity",
+      },
+      { label: "Authentication and Authorization", anchor: "#auth" },
+      { label: "Admin Dashboard Design", anchor: "#admin-dashboard-design" },
+    ],
+  },
+  {
+    label: "Architecture",
+    link: "/case-study/architecture/",
+    anchors: [
+      { label: "Local Developent Experience", anchor: "#local-development" },
+      { label: "Production Architecture", anchor: "#production-architecture" },
+    ],
+  },
+  {
+    label: "Future Work",
+    link: "/case-study/future-work/",
+    anchors: [
+      { label: "Multi-Tenant Architecture", anchor: "#multi-tenant" },
+      {
+        label: "Refining Microservices Architecture",
+        anchor: "#refining-microservices",
+      },
+      { label: "Additional SDK Compatability", anchor: "#sdk" },
+      { label: "Greater Scalability Control", anchor: "#scalability-control" },
+      {
+        label: "Additional Cloud Provider Support",
+        anchor: "#additional-cloud-providers",
+      },
+    ],
+  },
+];
+
+function isCurrentPage(link: string): boolean {
+  return pathname === link || pathname === link.replace(/\/$/, "");
+}
+
+function isCurrentSection(section: any): boolean {
+  return isCurrentPage(section.link);
+}
+
+function shouldExpand(section: any): boolean {
+  return isCurrentSection(section);
+}
+---
+
+<style>
+  .case-study-sidebar {
+    width: 300px;
+    height: calc(100vh - 70px); /* Subtract header height */
+    position: fixed;
+    top: 70px; /* Header height */
+    left: 0;
+    background: #fafafa;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    overflow-y: auto;
+    padding: 2rem 0;
+    z-index: 40;
+  }
+
+  .sidebar-content {
+    padding: 0 1.5rem;
+  }
+
+  .nav-section {
+    margin-bottom: 0.25rem;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #666;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 0.125rem 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #374151;
+  }
+
+  .nav-item.active {
+    background: rgba(230, 126, 34, 0.1);
+    color: #e67e22;
+    font-weight: 600;
+  }
+
+  .nav-item.parent {
+    font-weight: 600;
+    color: #666;
+    padding-left: 0.75rem;
+  }
+
+  .nav-item.parent.expanded {
+    background: linear-gradient(
+      135deg,
+      #e67e22 0%,
+      #f39c12 30%,
+      #f1c40f 70%,
+      #f4d03f 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-children {
+    margin-left: 0.75rem;
+    border-left: 2px solid rgba(0, 0, 0, 0.08);
+    padding-left: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-children .anchor-link {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 400;
+    margin: 0.125rem 0;
+    color: #666;
+  }
+
+  .nav-children .anchor-link:hover {
+    background: rgba(230, 126, 34, 0.05);
+    color: #e67e22;
+    font-weight: 600;
+  }
+
+  .expand-icon {
+    display: inline-block;
+    margin-right: 0.75rem;
+    transition: transform 0.2s ease;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    width: 12px;
+  }
+
+  .expand-icon.expanded {
+    transform: rotate(90deg);
+  }
+
+  * Hide on tablets and mobile */ @media (max-width: 1024px) {
+    .case-study-sidebar {
+      display: none;
+    }
+  }
+
+  /* Custom scrollbar */
+  .case-study-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .case-study-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .case-study-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .case-study-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+</style>
+<aside class="case-study-sidebar">
+  <div class="sidebar-content">
+    <nav>
+      {
+        navigation.map((section) => (
+          <div class="nav-section">
+            <a
+              href={section.link}
+              class={`nav-item parent ${shouldExpand(section) ? "expanded" : ""} ${isCurrentPage(section.link) ? "active" : ""}`}
+            >
+              {section.anchors.length > 0 && (
+                <span
+                  class={`expand-icon ${shouldExpand(section) ? "expanded" : ""}`}
+                >
+                  ▶
+                </span>
+              )}
+              {section.label}
+            </a>
+
+            {section.anchors.length > 0 && shouldExpand(section) && (
+              <div class="nav-children">
+                {section.anchors.map((anchor) => (
+                  <a
+                    href={`${section.link}${anchor.anchor}`}
+                    class="nav-item anchor-link"
+                  >
+                    {anchor.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+</aside>
