@@ -1,0 +1,106 @@
+---
+// src/components/Footer.astro
+---
+
+<style>
+  .footer {
+    background: #fafafa;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 1rem 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 600;
+    background: linear-gradient(
+      135deg,
+      #e67e22 0%,
+      #f39c12 30%,
+      #f1c40f 70%,
+      #f4d03f 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .footer-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .footer-social:hover {
+    color: #374151;
+    transform: translateY(-1px);
+  }
+
+  .footer-social img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-social:hover img {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+</style>
+
+<footer class="footer">
+  <div class="footer-content">
+    <p class="footer-text">Pendulum 2025</p>
+    <div class="footer-socials">
+      <a
+        href="https://github.com/Pendulum-BaaS"
+        class="footer-social"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="/assets/github-mark.svg" alt="Pendulum GitHub" />
+      </a>
+      <a
+        href="/"
+        class="footer-social"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="/assets/linkedin-logo.svg" alt="Pendulum LinkedIn" />
+      </a>
+    </div>
+  </div>
+</footer>
