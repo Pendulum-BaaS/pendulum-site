@@ -66,7 +66,7 @@ const { frontmatter } = Astro.props;
       /* Content area - Takes remaining space with its own scroll */
       .case-study-content {
         background: white;
-        padding: 3rem 4rem;
+        padding: 3rem 12% 3rem 12%;
         line-height: 1.5;
         position: relative;
         z-index: 1;
@@ -240,7 +240,7 @@ const { frontmatter } = Astro.props;
         }
         
         .case-study-content {
-          padding: 2rem;
+          padding: 2rem 8%;
           grid-column: 1;
           grid-row: 1;
         }
@@ -249,7 +249,7 @@ const { frontmatter } = Astro.props;
       /* Mobile phones */
       @media (max-width: 768px) {
         .case-study-content {
-          padding: 1.5rem;
+          padding: 1.5rem 7%;
         }
 
         .case-study-content h1 {
@@ -258,6 +258,13 @@ const { frontmatter } = Astro.props;
 
         .case-study-content h2 {
           font-size: 1.75rem;
+        }
+      }
+
+      /* Very small screens */
+      @media (max-width: 480px) {
+        .case-study-content {
+          padding: 1rem 6%;
         }
       }
 
