@@ -1,0 +1,593 @@
+---
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+
+const frontMatter = {
+  title: "Design & Challenges",
+  description:
+    "Design decisions made and implementation challenges faced in building Pendulum BaaS",
+  prevSection: "Using Pendulum",
+  prevPath: "/case-study/using-pendulum/",
+  nextSection: "Architecture",
+  nextPath: "/case-study/architecture/",
+};
+---
+
+<CaseStudyLayout frontmatter={frontMatter}>
+  <h1>Design Decisions & Implementation Challenges</h1>
+
+  <h2 id="the-database">The Database — SQL vs. NoSQL</h2>
+
+  <p>
+    To deliver automatic real-time updates across all connected clients, we
+    chose MongoDB because documents naturally map to application objects - when
+    a user updates a project task, we can instantly broadcast the complete task
+    object without server-side data reconstruction.
+  </p>
+  <p>
+    This document-based approach also perfectly supports our target users - solo
+    developers and small teams prototyping collaborative applications.
+    Developers can avoid database migrations as their data model evolves, and
+    new fields can be added without breaking existing data.
+  </p>
+  <p>
+    Mongo’s flexible schema suited our needs, but it was not without downsides.
+    While possible, Mongo lacks the ability to efficiently join data across
+    collections for complex querying, aggregation, and reporting. Additionally,
+    Mongo pushes much of the data access responsibility to the application
+    level, which creates additional complexity within the application server.
+  </p>
+  <p>
+    Alternatively, we considered using a traditional SQL Database — a decision
+    many BaaS providers opt for. SQL's complex analytical querying ability is
+    great for applications with highly relational data or those requiring
+    extensive reporting. Furthermore, many SQL databases have built-in row-level
+    access controls which make securing backend data more straightforward.
+    However, SQL’s rigid schema requirements did not align with our need for a
+    flexible data model.
+  </p>
+
+  <div class="table-container">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>SQL Database</th>
+          <th>NoSQL Database</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rigid schema, requires migrations when schema changes</td>
+          <td>Flexible schema, no migrations needed</td>
+        </tr>
+        <tr>
+          <td>Complex <code>JOIN</code>s needed for real-time broadcasting</td>
+          <td>Complete documents broadcast instantly</td>
+        </tr>
+        <tr>
+          <td
+            >Excellent <code>JOIN</code> support, complex analytical queries</td
+          >
+          <td
+            >Limited cross-collection <code>JOIN</code>s, simple aggregations</td
+          >
+        </tr>
+        <tr>
+          <td>Row-level security, fine-grained permissions</td>
+          <td>Application-level security implementation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="data-validation">Data Validation</h2>
+
+  <p>
+    Frontend developers shouldn't have to worry about complex data validation
+    when prototyping applications. While MongoDB's flexible schema enables rapid
+    iteration, malformed data could crash application logic - so we built
+    comprehensive validation that runs automatically without any developer
+    configuration.
+  </p>
+  <p>
+    Pendulum handles all data integrity through middleware validation that runs
+    before your data reaches the database. Every API request is automatically
+    sanitized, validated, and normalized with custom error codes, so developers
+    can focus on building features while we ensure data consistency. This
+    centralized validation means consistent protection across all endpoints
+    without writing validation code.
+  </p>
+
+  <img
+    src="/assets/design-implementation/middleware_validation.gif"
+    alt="Pendulum Validation Middleware"
+  />
+
+  <p>
+    With the middleware approach, every request passes through a series of
+    validators, even requests that may not strictly require validation. While
+    this centralized approach increases latency for API calls, the alternative
+    was implementing validation logic directly inside each database controller.
+    Controller-level validation can catch errors closer to where they would
+    cause problems, but result in significant code duplication and increase the
+    risk of missed edge cases as validation requirements change.
+  </p>
+
+  <h2 id="enabling-reactivity">Enabling Reactivity</h2>
+
+  <p>
+    Our real-time design consists of a single method call that makes any
+    application reactive - <code
+      >client.realtime.subscribe('collection', callback)</code
+    > - but how do we facilitate this level of simplicity? All CRUD operations with
+    Pendulum are done over standard HTTP. Given this, we recognized that our real-time
+    data synchronization only needed to flow in one direction. When an update occurs,
+    the events server pushes updates to connected clients without the need for a
+    response back.
+  </p>
+  <p>
+    The uni-directional communication channel of server-sent events was exactly
+    what we needed for our use case. Server-sent events are simple to implement
+    and many web browsers even handle client reconnection by default.
+  </p>
+
+  <p>
+    We considered both WebSockets and polling as potential options for our
+    real-time functionality, each with distinct tradeoffs. WebSockets’
+    bi-directional communication channel works best for applications that need
+    to allow messages from the client. Using a single communication channel for
+    database operations and real-time updates makes for snappier responses, but,
+    like we mentioned earlier, requires the developer to write more
+    backend-related code. WebSockets also add additional complexity in managing
+    connection state in distributed systems as applications scale.
+  </p>
+
+  <p>
+    Polling is the simplest to implement but adds strain on the server and is
+    relatively ineffective for true real-time updates.
+  </p>
+
+  <img
+    src="/assets/design-implementation/realtime_comparison.gif"
+    alt="Comparing Realtime Connection Methods"
+  />
+
+  <h2 id="backend-design">Backend Design</h2>
+
+  <p>
+    At this point, Pendulum’s backend was a monolith where the application
+    server and events server were a single service. The service handled API
+    requests, data validation, authentication and authorization, and
+    broadcasting database change events in real time. We anticipated difficulty
+    in trying to make this architecture scalable, so we examined different
+    application usage patterns to assess potential outcomes.
+  </p>
+  <p>
+    Take two reactive applications with similar load that use Pendulum for their
+    backend: one with a high read-to-write ratio, and another with a low
+    read-to-write ratio. In either example, resource contention between the
+    application server and the events server is inevitable.
+  </p>
+  <p>
+    In the first example, the vast majority of requests are simply querying
+    existing data. As a result, there are relatively few database mutations
+    happening that would require our events server to broadcast events to
+    subscribed clients. Despite the lack of database events, the events server
+    still has to maintain the connections to subscribed clients. This pulls
+    necessary resources away from the application server and slows down API
+    response time. In the second example, the high number of writes to the
+    database that the application server makes uses resources that the events
+    server needs to send updates to clients. The result? Both services are
+    negatively impacted. API response latency increases and real-time updates
+    fail to happen in real time.
+  </p>
+
+  <img
+    src="/assets/design-implementation/read_write.gif"
+    alt="Monolith Architecture"
+  />
+
+  <p>
+    By shifting to a microservices architecture, each server is separated out
+    into distinct services with well-defined responsibilities. The app service
+    only requires resources for handling API requests and delegates real-time
+    updating to the events service. The events service’s job is to maintain
+    persistent connections and broadcast database change events.
+  </p>
+  <p>
+    To implement this de-coupling, we created an in-memory <code
+      >eventClient</code
+    > whose sole responsibility is to bridge the two services. When the app service
+    completes a database operation, the <code>eventClient</code>makes a single
+    HTTP POST request to the events service at an internal endpoint with the
+    details of the change. When the events service receives a database event, it
+    distributes the message to all actively connected clients. This separation
+    allows each service to scale independently based on actual usage patterns —
+    a key feature in enabling a scalable architecture. In the end, loosely
+    coupling these services means database operations complete quickly
+    regardless of active users, and real-time updates can be broadcasted without
+    bogging down API responses.
+  </p>
+
+  <img
+    src="/assets/design-implementation/microservices.gif"
+    alt="Pendulum Microservices Architecture"
+  />
+
+  <p>
+    Though it suits our use case, microservices also introduce network latency
+    and interservice communication adds complexity to the implementation. The
+    monolith is simpler to implement, offers easier deployment, reduced network
+    latency, and makes debugging more straightforward. Despite these benefits, a
+    monolithic approach would require the entire application to scale regardless
+    of which component actually needs more resources.
+  </p>
+  <p>
+    Our approach allows developers to deliver reliable real-time updates without
+    managing any of the architectural complexity.
+  </p>
+
+  <h2 id="frontend-reactivity">Handling Reactivity in the Frontend</h2>
+
+  <p>
+    With our reactive design implemented in the backend, we faced new
+    reactivity-related challenges on the frontend. Frontend developers commonly
+    design applications to immediately reflect database operations in the UI
+    through optimistic updating. In applications with real-time updates,
+    developers also need to incorporate changes in backend state from other
+    users' actions. The combination of real-time event subscriptions,
+    application state, and API calls can lead to synchronization problems
+    between optimistic updates from frontend actions and event-driven updates
+    from the server.
+  </p>
+
+  <img
+    src="/assets/design-implementation/optimistic_updates.gif"
+    alt="Optimistic Updating"
+  />
+
+  <p>
+    Our main challenge was figuring out how to provide a mechanism to ignore
+    database event notifications generated by the same client. Immediate local
+    updates provide superior user experience by making changes appear instantly
+    in the UI. Conversely, server-first updates ensure consistency but introduce
+    lag to the end user.
+  </p>
+  <p>
+    For Pendulum, we prioritized the use of immediate local updates to improve
+    application responsiveness. We implemented a client-side management system
+    to track outgoing database operations and filter corresponding incoming
+    events. When a client performs a mutating database operation, the Pendulum
+    SDK generates and stores a unique <code>operationId</code>. If the events
+    service pushes data with a matching <code>operationId</code>, the SDK
+    ignores it since the change originated from that client and the frontend
+    state was already updated optimistically. While this requires additional
+    infrastructure and cleanup mechanisms, developers get the best of both
+    worlds without any additional code. Applications get the immediate
+    responsiveness of optimistic updates and the consistency ensured by
+    server-first updates.
+  </p>
+
+  <img
+    src="/assets/design-implementation/SSE_filter.gif"
+    alt="Optimistic Updating"
+  />
+
+  <h2 id="auth">Authentication and Authorization</h2>
+
+  <p>
+    We mentioned authentication management as a key feature expected by anyone
+    using a BaaS platform. Frontend developers expect BaaS platforms to handle
+    authentication and abstract the complexity away into easy-to-implement
+    methods. To achieve this, we provide authentication methods defined directly
+    on the SDK's <code>auth</code> class as seen in the table below. We followed
+    industry best practices when handling sensitive password information by only
+    storing and comparing password hashes during registration and authentication.
+  </p>
+
+  <div class="table-container">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>register(username, email, password)</code></td>
+          <td
+            >Creates a new user account with the given credentials. Returns a
+            JSON object with <code>success</code> boolean and user details including
+            <code>username</code>, <code>email</code>, and <code>role</code> (defaults
+            to 'user'). If registration fails, returns <code
+              >success: false</code
+            > with an error message.</td
+          >
+        </tr>
+        <tr>
+          <td><code>login(identifier, password)</code></td>
+          <td
+            >Authenticates a user with username/email and password. Returns a
+            JSON object with <code>success</code> boolean, <code>userId</code>,
+            and a JWT token with 24-hour expiration. If login fails due to
+            invalid credentials, returns <code>success: false</code> with an error
+            message.</td
+          >
+        </tr>
+        <tr>
+          <td><code>logout()</code></td>
+          <td
+            >Invalidates the current user session and clears the stored
+            authentication token. Returns a JSON object with <code>success</code
+            > boolean and confirmation message. The client automatically removes
+            the token from storage, requiring users to log in again for protected
+            operations.</td
+          >
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Authentication in Practice</h3>
+
+  <p>
+    After a successful login, Pendulum generates a JSON Web Token (JWT) whose
+    payload contains information pertaining to the user like their <code
+      >userId</code
+    > and
+    <code>role</code>. The token is signed using a private key, given a 24-hour
+    expiration, and sent back to the client in the response. We transmit the JWT
+    in the response’s Authorization Header. The authorization header approach
+    provides greater control over when tokens are sent and maintains cleaner
+    separation of concerns between authentication and other HTTP functionality.
+    It's also the standard method for authenticating API requests in modern web
+    development. While this method typically adds more burden on the developer
+    to manage data on the client side, Pendulum’s SDK handles client-side tokens
+    for developers out-of-the-box.
+  </p>
+
+  <img
+    src="/assets/design-implementation/JWT.gif"
+    alt="Authentication with JWT"
+  />
+
+  <p>
+    We considered using cookies due to several advantages like automatic
+    inclusion in requests and better protection against Cross-Site Scripting
+    attacks with <code>HttpOnly</code> and <code>Secure</code> flags. However, cookies
+    can be vulnerable to Cross-Site Forgery Request (CSRF) attacks and their automatic
+    transmission can be inefficient for non-API requests.
+  </p>
+
+  <h3>Authorization</h3>
+
+  <p>
+    Now developers have a way to implement authentication into their
+    application, but we had to determine how users could restrict access to
+    resources based on the roles assigned to users — a practice referred to as
+    Role-Based Access Control (RBAC). MongoDB’s lack of row-level security
+    features required us to implement RBAC at the application level.
+  </p>
+
+  <p>With Pendulum we used a simple, three-role system:</p>
+
+  <img
+    src="/assets/design-implementation/three_role.png"
+    alt="Three Role Access Rules"
+  />
+
+  <p>
+    We created a <code>collection_metadata</code> collection in MongoDB to keep track
+    of all existing collections and their permissions. This is combined with an in-memory
+    <code>CollectionsManager</code> class to serve as the interface for querying
+    and mutating collection-level permissions. Every collection has permission rules
+    for each CRUD operation, where a rule represents the lowest-level role allowed
+    to perform that action. For example, a collection with the <code
+      >update</code
+    >
+    operation set to <code>user</code> means that only requests with <code
+      >user</code
+    > or <code>admin</code> roles in their token payloads are permitted — the <code
+      >public</code
+    > role cannot perform this action. These rules are then enforced for all requests
+    to the application service through centralized middleware functions that validate
+    tokens and enforce RBAC rules.
+  </p>
+  <p>
+    We chose to assign the <code>public</code> role for all CRUD operations as the
+    default for all new collections. With flexibility in mind, we leave it to the
+    developer to determine and set the appropriate permission levels for collections
+    — the Pendulum admin dashboard makes this straightforward and updates are reflected
+    and enforced in the application in real-time.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source
+        src="/assets/design-implementation/permissions.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <h2 id="admin-dashboard-design">Admin Dashboard Design</h2>
+
+  <p>
+    Pendulum’s Admin Dashboard exists to give developers a centralized interface
+    for managing backend data. We needed to display system-level information
+    like logs while also keeping the UI synchronized with real-time data
+    changes. In other words, how could we accurately reflect the most up-to-date
+    backend state to the application’s developers? The solution was right in
+    front of us — <em>use our own platform.</em>
+  </p>
+  <p>
+    The SDK’s database methods made implementing data manipulation functionality
+    straightforward, and the automatic connection to our real-time events
+    service provided seamless real-time updates for data displays. All it needed
+    was a dedicated SSE connection in our application service to stream logs in
+    real-time. Building off our existing middleware infrastructure, we
+    implemented the logging SSE stream with a middleware in all CRUD API
+    endpoints. Request details like request method, URL, response status, client
+    IP, and authenticated user ID are captured, formatted into structured log
+    entries, and immediately broadcast to all connected admin clients.
+    Developers now get real-time API monitoring without needing to poll log
+    files or refresh the dashboard.
+  </p>
+  <p>
+    With this dual-stream architecture, developers can debug collection-level
+    issues by correlating database events with API calls and monitor system
+    health through response status patterns. By choosing to serve our admin
+    dashboard’s static assets directly from the app service, we achieved reduced
+    network latency for even faster data synchronization and avoided needlessly
+    over-complicating our backend architecture.
+  </p>
+
+  <img
+    src="/assets/design-implementation/admin_dashboard.gif"
+    alt="Admin Dashboard Dual-Stream Connection"
+  />
+
+  <style>
+    /* General image styling */
+    img {
+      max-width: 700px;
+      width: 100%;
+      height: auto;
+      margin: 2rem auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Video container styling */
+    .video-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+      width: 100%;
+      max-width: 800px;
+      background: #000;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+
+    /* Table styling */
+    .table-container {
+      margin: 2rem auto;
+      max-width: 800px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+      font-size: 1rem;
+    }
+
+    .comparison-table thead {
+      background: linear-gradient(
+        135deg,
+        #1a1a2e 0%,
+        #2d1b69 50%,
+        #6a4c93 100%
+      );
+    }
+
+    .comparison-table th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: white;
+      letter-spacing: 0.025em;
+    }
+
+    .comparison-table tbody tr {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .comparison-table tbody tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: #f1f5f9;
+      transition: background-color 0.2s ease;
+    }
+
+    .comparison-table td {
+      padding: 1rem 1.5rem;
+      vertical-align: top;
+      line-height: 1.6;
+      color: #4a5568;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .comparison-table td:first-child {
+      width: 50%;
+    }
+
+    .comparison-table td:last-child {
+      border-right: none;
+      width: 50%;
+    }
+
+    /* For SQL vs NoSQL table - center aligned headers */
+    .comparison-table th:only-child,
+    .comparison-table thead tr:first-child th {
+      text-align: center;
+    }
+
+    /* Inline code styling */
+    code:not(pre code) {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 0.2em 0.4em;
+      font-size: 0.9em;
+      font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      img,
+      .video-container,
+      .table-container {
+        max-width: 95%;
+        margin: 1.5rem auto;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .comparison-table th {
+        font-size: 1rem;
+      }
+
+      .comparison-table td:first-child {
+        width: auto;
+      }
+
+      .comparison-table td:last-child {
+        width: auto;
+      }
+    }
+  </style>
+</CaseStudyLayout>

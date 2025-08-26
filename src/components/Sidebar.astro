@@ -19,10 +19,10 @@ const navigation = [
     ],
   },
   {
-    label: "What is Pendulum?",
-    link: "/case-study/what-is-pendulum/",
+    label: "Where Does Pendulum Fit In?",
+    link: "/case-study/where-does-pendulum-fit/",
     anchors: [
-      { label: "Philosophy", anchor: "#philosophy" },
+      { label: "Design Principles", anchor: "#design-principles" },
       { label: "Core Components", anchor: "#core-components" },
     ],
   },
@@ -54,7 +54,7 @@ const navigation = [
     label: "Architecture",
     link: "/case-study/architecture/",
     anchors: [
-      { label: "Local Developent Experience", anchor: "#local-development" },
+      { label: "Local Development Experience", anchor: "#local-development" },
       { label: "Production Architecture", anchor: "#production-architecture" },
     ],
   },
@@ -190,7 +190,7 @@ function shouldExpand(section: any): boolean {
     transform: rotate(90deg);
   }
 
-  * Hide on tablets and mobile */ @media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     .case-study-sidebar {
       display: none;
     }

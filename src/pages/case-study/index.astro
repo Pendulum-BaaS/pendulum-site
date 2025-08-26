@@ -1,0 +1,185 @@
+---
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+
+const frontMatter = {
+  title: "Background",
+  description: "Backend as a Service Background",
+  nextSection: "Where Does Pendulum Fit In?",
+  nextPath: "/case-study/where-does-pendulum-fit/",
+};
+---
+
+<CaseStudyLayout frontmatter={frontMatter}>
+  <h1 class="highlight">Background</h1>
+
+  <h2 id="intro">Introduction</h2>
+
+  <p>
+    Backend infrastructure shouldn't slow down solo developers and small teams
+    who want to focus on building great user experiences. Pendulum is an open
+    source Backend as a Service (BaaS) platform built with these developers in
+    mind, enabling quick prototyping of reactive web applications with automated
+    deployment to an existing AWS account. Pendulum is ideal for building
+    collaborative applications like real-time dashboards, project management
+    tools, chat systems, or any application where multiple users need to see
+    live updates automatically.
+  </p>
+
+  <h2 id="cloud-service-models">Cloud Service Models</h2>
+
+  <p>
+    Cloud infrastructure can be generally categorized into three main levels of
+    abstraction,with each level building on the previous one: Infrastructure,
+    Platform, and Backend.
+  </p>
+
+  <h3 id="iaas">IaaS (Infrastructure as a Service)</h3>
+
+  <p>
+    AWS, GCP, and Azure provide compute, storage, and networking resources
+    without requiring physical hardware management. Developers maintain control
+    over operating systems, runtime environments, and application code while the
+    provider manages the underlying hardware.
+  </p>
+
+  <h3 id="paas">PaaS (Platform as a Service)</h3>
+
+  <p>
+    Platforms like Heroku, Fly.io, and Render abstract away infrastructure
+    provisioning, load balancing, and scaling. By managing these components,
+    developers can worry less about infrastructure and deployment while
+    maintaining control over data stores and application code.
+  </p>
+
+  <h3 id="baas">BaaS (Backend as a Service)</h3>
+
+  <p>
+    Services like Convex, Firebase, and Supabase handle typical backend services
+    including API endpoints, database management, and authentication. With BaaS,
+    developers focus primarily on frontend code and connect to the managed
+    backend through the platform’s SDK.
+  </p>
+
+  <p>
+    This progression toward greater abstraction allows developers to focus more
+    on building user experiences rather than managing infrastructure complexity.
+  </p>
+
+  <img
+    src="/assets/background/cloud-platform-comparisons.svg"
+    alt="Cloud Platform Comparison"
+  />
+
+  <h2 id="modern-web-application-structure">
+    Modern Web Application Structure
+  </h2>
+
+  <p>Modern web applications typically consist of three distinct tiers:</p>
+
+  <img
+    src="/assets/background/1_2_three_tier_diagram.gif"
+    alt="Modern Web Application Structure"
+  />
+
+  <p>
+    The <strong>frontend</strong> is the <strong>Presentation tier</strong> of an
+    application. Static files run in the browser to control the user interface and
+    make API requests to the Application tier for fetching and sending data.
+  </p>
+  <p>
+    The <strong>backend</strong> of an application incorporates both the <strong
+      >Application</strong
+    > and <strong>Data</strong>
+    tiers. It handles frontend requests, executes business logic, and manages storing
+    and retrieving data.
+  </p>
+
+  <h2 id="use-case-for-baas">The Use Case for BaaS</h2>
+  <p>
+    Infrastructure and deployment aside, building full stack web applications is
+    complex! Developers who want to prototype applications quickly and build
+    great UI’s are bogged down with backend implementation details — many of
+    which are the same across projects. Backend as a Service platforms offer a
+    variety of backend features so developers can quickly build user-facing
+    applications without provisioning servers or infrastructure.
+  </p>
+
+  <p>
+    Three popular BaaS platforms illustrate different approaches to solving
+    these challenges:
+  </p>
+
+  <h3>Convex</h3>
+  <p>
+    Convex is a reactive database that also acts as a BaaS platform for building
+    applications. With Convex, database schema, queries, and mutations are
+    defined using TypeScript functions and all database operations are performed
+    through server-side functions that provide real-time synchronization of
+    application state. Convex also handles configuration and deployment of
+    backend services like user authentication and file storage.
+  </p>
+
+  <h3>Firebase</h3>
+
+  <p>
+    Firebase is a BaaS platform from Google that provides developers with a
+    fully-managed backend infrastructure for prototyping and building
+    applications quickly. It uses a NoSQL database and offers real-time updates.
+  </p>
+
+  <h3>Supabase</h3>
+
+  <p>
+    Supabase is an open-source alternative to Firebase that allows developers to
+    easily build and manage the backend of their applications. One of its
+    primary differentiating factors is its use of PostgreSQL, which makes it
+    ideal for applications with a well-defined data model.
+  </p>
+
+  <img
+    src="/assets/background/existing-solutions-table.svg"
+    alt="Existing BaaS Solutions"
+    style="border:none;box-shadow:none"
+  />
+
+  <p>
+    These platforms demonstrate the value of BaaS, but existing solutions either
+    require significant custom code for basic operations or create dependencies
+    on third-party infrastructure and data hosting. Pendulum addresses these
+    challenges by providing BaaS convenience while maintaining ownership of your
+    data and infrastructure.
+  </p>
+
+  <style>
+    /* Image styling to control size and centering */
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 2rem auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Specific sizing for different image types */
+    img[src*="cloud-platform-comparisons"] {
+      max-width: 700px;
+    }
+
+    img[src*="three_tier_diagram"] {
+      max-width: 700px;
+    }
+
+    img[src*="existing-solutions-table"] {
+      max-width: 800px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      img {
+        max-width: 95%;
+        margin: 1.5rem auto;
+      }
+    }
+  </style>
+</CaseStudyLayout>

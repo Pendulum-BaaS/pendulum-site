@@ -1,0 +1,286 @@
+---
+// src/pages/case-study/using-pendulum.astro
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import { Code } from "astro:components";
+
+const frontmatter = {
+  title: "Using Pendulum",
+  description: "How to use the Pendulum BaaS Platform",
+  prevSection: "Where Does Pendulum Fit In?",
+  prevPath: "/case-study/where-does-pendulum-fit",
+  nextSection: "Design Decisions & Implementation Challenges",
+  nextPath: "/case-study/design-and-challenges/",
+};
+
+const install = `$ npm create vite@latest demo
+$ cd demo
+$ npm install @pendulum-baas/cli
+`;
+
+const sdkImport = `import { PendulumClient } from "@pendulum-baas/sdk";
+
+const client = new PendulumClient();
+
+// your frontend code...
+`;
+
+const dbMethod = `const loadItems = async () => {
+  try {
+    const response = await client.db.getAll("items");
+
+    if (response.success) {
+      setItems(response.data);
+    } else {
+      throw new Error(data.error);
+    }
+  } catch (error) {
+    setError("Failed to fetch items");
+    console.error(error);
+  }
+};
+`;
+
+const realtimeFn = `const updateItems = (message) => {
+  const { action, eventData } = message;
+
+  switch (action) {
+    case "insert":
+      setItems(prev => [...prev, ...eventData.affected]);
+      break;
+
+    case "update":
+      setItems(prev => prev.map(p => {
+        if (eventData.ids.includes(p.id)) {
+          return eventData.affected.find(item => item.id === p.id);
+        }
+        return p;
+      }));
+      break;
+
+    case "delete":
+      setItems(prev => prev.filter(p => !eventData.ids.includes(p.id)));
+      break;
+  }
+};
+`;
+
+const useEffect = `useEffect(() => {
+  loadItems();
+
+  client.realtime.subscribe("items", updateItems);
+
+  return () => client.realtime.unsubscribe("items", updateItems);
+}, []);
+`;
+
+const npmScripts = `$ npm run pendulum-backend:start
+$ npm run pendulum-backend:stop
+`;
+---
+
+<CaseStudyLayout frontmatter={frontmatter}>
+  <h1>Using Pendulum</h1>
+
+  <h2 id="local-development">Local Development</h2>
+
+  <p>
+    Developers can get started building applications with Pendulum by developing
+    locally. Simply create a project directory with the build tool of choice,
+    move into the new directory, and install the Pendulum CLI.
+  </p>
+
+  <div class="example-code">
+    <Code code={install} lang="bash" theme="material-theme-palenight" />
+  </div>
+
+  <p>
+    Once the Pendulum CLI tool has been installed, running the <code>init</code>
+    command installs the SDK and backend packages, and adds a couple helpful npm
+    scripts for stopping and starting the backend.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source src="/assets/using-pendulum/pendulum-init.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <p>
+    The Pendulum SDK is easily incorporated into the frontend code with an
+    import:
+  </p>
+
+  <div class="example-code">
+    <Code code={sdkImport} lang="ts" theme="material-theme-palenight" />
+  </div>
+
+  <p>
+    Developers can take advantage of both the default CRUD operations built into
+    Pendulum, as well as the real-time data subscription feature to make
+    frontend applications reactive. Here we look at both features at work in a
+    React project using JavaScript.
+  </p>
+
+  <div class="example-code">
+    <Code code={dbMethod} lang="ts" theme="material-theme-palenight" />
+    <div class="code-caption">
+      This function makes use of the <code>db.getAll</code> method to fetch all records
+      from the <code>items</code> collection.
+    </div>
+  </div>
+
+  <div class="example-code">
+    <Code code={realtimeFn} lang="ts" theme="material-theme-palenight" />
+    <div class="code-caption">
+      <code>updateItems</code> is the callback function that runs when the client
+      receives an update from the Pendulum events server.
+    </div>
+  </div>
+
+  <div class="example-code">
+    <Code code={useEffect} lang="ts" theme="material-theme-palenight" />
+    <div class="code-caption">
+      Invoke the <code>loadItems</code> function to get all items and register the
+      <code>updateItems</code> function to handle real-time updates.
+    </div>
+  </div>
+
+  <p>
+    On mount, we can fetch the items from the backend with a GET request. In
+    that same effect we also subscribe to the <code>items</code> collection, passing
+    in the <code>updateItems</code> function as the callback. Now, every time the
+    events server pushes an update to the client, the <code>updateItems</code> function
+    runs and updates the frontend state.
+  </p>
+
+  <h4>Starting the Development Environment</h4>
+
+  <p>
+    The <code>npx pendulum dev</code> command initializes the local development environment.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source src="/assets/using-pendulum/pendulum-dev.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <p>
+    At any point during the development process, the Pendulum backend container
+    network can be stopped or started with the npm scripts that were added with
+    the <code>init</code> command.
+  </p>
+
+  <div class="example-code">
+    <Code code={npmScripts} lang="bash" theme="material-theme-palenight" />
+  </div>
+
+  <p>
+    The admin dashboard, available at <code>http://localhost:3000/admin</code> can
+    now be used to manipulate backend data and visualize the flow of data through
+    the application during local development. Additionally, developers can adjust
+    collection-level permissions and observe these permission changes during runtime.
+  </p>
+
+  <h2 id="production">Production</h2>
+
+  <p>
+    When it's time to deploy an application, executing the <code>deploy</code> command
+    will prompt developers for their AWS account information, the desired region
+    for deployment, the project name, and the path to the directory with their frontend
+    build artifacts. The CLI tool will automatically deploy those resources, alongside
+    the entire Pendulum backend infrastructure, to a dedicated VPC in the developer's
+    AWS account.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source
+        src="/assets/using-pendulum/pendulum-deploy.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <p>
+    Conversely, deployments can be torn down and destroyed at any time with the <code
+      >destroy</code
+    > command. This command will destroy each AWS CloudFormation stack associated
+    with the deployment.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source
+        src="/assets/using-pendulum/pendulum-destroy.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</CaseStudyLayout>
+
+<style>
+  /* Code blocks - uniform width and centered */
+  .example-code {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    width: 100%;
+    max-width: 700px; /* Adjust this to match your longest code block */
+    display: block;
+  }
+
+  .example-code :global(pre) {
+    margin: 0 !important;
+    border-radius: 12px !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    padding: 1.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Inline code styling */
+  code:not(pre code) {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+    color: #495057;
+    font-weight: 500;
+  }
+
+  .code-caption {
+    background: transparent;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+  }
+
+  .video-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    width: 100%;
+    max-width: 800px;
+    display: block;
+    background: #000;
+  }
+
+  .video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+  }
+</style>

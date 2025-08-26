@@ -1,0 +1,437 @@
+---
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+
+const frontMatter = {
+  title: "Architecture",
+  description: "Final review of Pendulum BaaS' architecture",
+  prevSection: "Design Decisions & Implementation Challenges",
+  prevPath: "/case-study/design-and-challenges/",
+  nextSection: "Future Work",
+  nextPath: "/case-study/future-work/",
+};
+---
+
+<CaseStudyLayout frontmatter={frontMatter}>
+  <h1>Architecture</h1>
+
+  <p>
+    Building a self-hosted BaaS requires solving deployment complexity that
+    would typically require a DevOps team. Pendulum's architecture automates
+    everything from Docker orchestration locally to multi-service AWS
+    deployments in production.
+  </p>
+
+  <h2 id="local-development">Local Development Experience</h2>
+  <p>
+    Developers expect their local environment to be “turnkey ready” and do not
+    want to waste time wrestling with service dependencies, port conflicts, or
+    MongoDB installations.
+  </p>
+  <p>
+    Pendulum's local architecture consists of three containerized services
+    orchestrated with Docker Compose and connected via a bridge network:
+  </p>
+  <ul>
+    <li>
+      <strong>MongoDB</strong> with persistent volumes, automated initialization,
+      and container health monitoring
+    </li>
+    <li>
+      <strong>App service</strong> handling CRUD operations, serving the Admin Dashboard,
+      and managing inter-service communication
+    </li>
+    <li>
+      <strong>Events service</strong> maintaining persistent SSE connections and
+      coordinating real-time event distribution
+    </li>
+  </ul>
+
+  <p>
+    Pendulum spins up all three services through a single command, <code
+      >npx pendulum dev</code
+    >.
+  </p>
+  <p>
+    This containerized approach eliminates developer environment setup but
+    introduces Docker as a dependency. While containers add memory overhead
+    compared to native processes, the alternative would require developers to
+    manually install MongoDB, manage Node.js versions, and handle service
+    startup ordering. These isolated containers mirror our production
+    architecture, ensuring alignment between the two environments and
+    eliminating the all too common issue of “works on my machine”.
+  </p>
+
+  <img
+    src="/assets/architecture/local_development.gif"
+    alt="Pendulum dev Command diagram"
+  />
+
+  <h2 id="production-architecture">Production Architecture</h2>
+  <p>
+    Production systems require load balancing, auto-scaling, managed databases,
+    security groups, and monitoring - complexity that can overwhelm developers.
+    Pendulum eliminates this friction through Infrastructure-as-Code automation
+    using AWS CDK, where a single <code>npx pendulum deploy</code> command provisions
+    complete production infrastructure in an isolated VPC.
+  </p>
+
+  <h3>Cloud Provider Choice</h3>
+
+  <p>
+    Building a BaaS platform with automated deployment leads to a fundamental
+    choice: take the breadth-first approach of supporting multiple cloud
+    providers or focus deeply on one and provide the best developer experience
+    possible. Supporting multiple cloud providers offers vendor flexibility but
+    significantly increases development complexity and maintenance overhead.
+  </p>
+  <p>
+    We chose an AWS-first strategy to prioritize developer experience over
+    provider flexibility. AWS offers a robust ecosystem of managed services,
+    extensive documentation, and the most widespread adoption of any cloud
+    provider. We accepted the tradeoff of vendor lock-in for production
+    deployments, but our open-source codebase enables users to adapt Pendulum
+    for other providers if needed. Single-command deployments deliver more value
+    than multi-cloud flexibility for developers focused on building frontend
+    applications.
+  </p>
+
+  <h3>Container Orchestration</h3>
+  <p>
+    As we discussed in reviewing our development architecture, we took the same
+    containerized service approach for production. To handle container
+    orchestration for scaling, networking, and deployment management, we
+    evaluated three primary options:
+  </p>
+  <p>
+    <strong>Elastic Kubernetes Service (EKS)</strong> offers advanced features like
+    custom resource definitions, advanced networking policies, and fine-grained resource
+    management. However, it requires significant operational expertise, complex YAML
+    configurations, and ongoing cluster management that conflicts with our zero-operations
+    philosophy.
+  </p>
+  <p>
+    <strong>EC2 instances</strong> offer complete control over the runtime environment,
+    allowing custom optimizations and direct server access. But this approach requires
+    manual scaling, security patching, and infrastructure management that works against
+    our goal of simple, automated deployment.
+  </p>
+  <p>
+    <strong>Elastic Container Services (ECS) with Fargate</strong> delivers serverless
+    containers with automatic scaling, integrated AWS networking, and zero server
+    management. While it sacrifices some flexibility and creates AWS vendor dependency,
+    it aligns perfectly with our goal of eliminating operational overhead for developers.
+  </p>
+
+  <div class="table-container">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>EKS<br />(Kubernetes)</th>
+          <th>EC2 Instances</th>
+          <th>ECS with<br />Fargate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>High complexity - YAML configs, cluster management</td>
+          <td>High complexity - manual scaling, patching, monitoring</td>
+          <td>Low complexity - zero server management</td>
+        </tr>
+        <tr>
+          <td>Advanced auto-scaling with custom metrics</td>
+          <td>Manual or basic auto-scaling groups</td>
+          <td>Automatic scaling based on CPU/memory</td>
+        </tr>
+        <tr>
+          <td>Fine-grained resource limits and requests</td>
+          <td>Complete hardware control</td>
+          <td>Limited to predefined CPU/memory combinations</td>
+        </tr>
+        <tr>
+          <td>Complex service meshes, custom networking policies</td>
+          <td>Full network control, custom configurations</td>
+          <td>Integrated AWS networking, security groups</td>
+        </tr>
+        <tr>
+          <td>Portable across cloud providers</td>
+          <td>Portable but requires migration effort</td>
+          <td>AWS-specific service</td>
+        </tr>
+        <tr>
+          <td>Complex RBAC, network policies, secrets</td>
+          <td>Manual security patching and hardening</td>
+          <td>AWS-managed security, automatic patching</td>
+        </tr>
+        <tr>
+          <td>Advanced service discovery with DNS, service mesh</td>
+          <td>Manual service discovery configuration or load balancer setup</td>
+          <td>Built-in service connect and load balancing</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    We chose Fargate to provide a simple and scalable production architecture
+    that requires little to no management from our end users. Both app and
+    events services can scale independently, while AWS handles underlying
+    infrastructure provisioning and management.
+  </p>
+
+  <h3>Database Selection</h3>
+
+  <p>
+    With MongoDB as the database for Pendulum, we could either choose to
+    self-manage MongoDB on EC2 instances or go for the managed AWS DocumentDB
+    service. DocumentDB integrates seamlessly with our existing MongoDB database
+    operations, and offers managed scaling. On top of that, it offers automatic
+    backups, replication across multiple Availability Zones, integrated security
+    groups, and CloudWatch monitoring — features that would be difficult to
+    replicate with a self-managed EC2 instance.
+  </p>
+  <p>
+    DocumentDB doesn't support all MongoDB features and creates further AWS
+    dependency, but self-managing MongoDB would require expertise in replica set
+    management, backup strategies, security hardening, and 24/7 monitoring -
+    operational complexity that conflicts with our zero-maintenance philosophy.
+  </p>
+
+  <div class="table-container">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Self-Managed MongoDB<br />on EC2</th>
+          <th>AWS DocumentDB</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td
+            >High operational overhead - manual installation, configuration,
+            updates</td
+          >
+          <td>Zero operational overhead - fully managed service</td>
+        </tr>
+        <tr>
+          <td>Manual scaling - resize instances, configure sharding</td>
+          <td>Automatic scaling - scale compute and storage independently</td>
+        </tr>
+        <tr>
+          <td
+            >Manual backup and recovery, configure backup scripts, test
+            restoration</td
+          >
+          <td>Automatic backups, point-in-time recovery</td>
+        </tr>
+        <tr>
+          <td>Manual availability - configure replica sets, failover logic</td>
+          <td
+            >Automatic availability - multi-AZ replication with automatic
+            failover</td
+          >
+        </tr>
+        <tr>
+          <td
+            >Manual security management - OS patching, MongoDB updates,
+            hardening</td
+          >
+          <td
+            >Managed security management - automatic patching, integrated
+            security groups</td
+          >
+        </tr>
+        <tr>
+          <td>Manual monitoring - set up CloudWatch, custom alerts</td>
+          <td
+            >Built-in monitoring - CloudWatch integration, performance insights</td
+          >
+        </tr>
+        <tr>
+          <td>100% full MongoDB feature set</td>
+          <td>~95% MongoDB compatibility, missing some advanced features</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Load Balancing and Traffic Management</h3>
+
+  <p>
+    Our microservices architecture creates routing complexity - frontend
+    requests need to reach the right service, services need to find each other
+    when scaling, and developers expect a single endpoint for their SDK. AWS’
+    Cloud Map lets us implement service discovery so that our backend services
+    can communicate using logical names rather than hardcoded endpoints when
+    containers scale.
+  </p>
+  <p>
+    For distributing frontend traffic, we used a two-tier approach: CloudFront
+    handles SSL termination and global CDN delivery, forwarding to an
+    Application Load Balancer (ALB) for service-specific routing. This lets
+    developers use the SDK without additional configuration while we handle
+    routing <code>/api</code> requests to the app service and <code
+      >/events</code
+    > to the events service automatically.
+  </p>
+  <p>
+    This architecture creates a unified endpoint experience — CloudFront
+    distribution behaviors enable the frontend SDK to seamlessly connect to
+    appropriate backend services without additional developer configuration.
+    Frontend applications deploy automatically to S3 with CloudFront
+    distribution for global content delivery, while the ALB focuses on
+    application-level routing and health checks.
+  </p>
+  <p>
+    This two-tier approach adds infrastructure complexity and potential latency
+    compared to direct service access, but eliminates the need for developers to
+    manage multiple endpoints or handle service discovery in their frontend
+    code.
+  </p>
+
+  <img
+    src="/assets/architecture/aws.png"
+    alt="Final Pendulum AWS Architecture"
+  />
+
+  <style>
+    /* General image styling */
+    img {
+      max-width: 700px;
+      width: 100%;
+      height: auto;
+      margin: 2rem auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Video container styling */
+    .video-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+      width: 100%;
+      max-width: 800px;
+      background: #000;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+
+    /* Table styling */
+    .table-container {
+      margin: 2rem auto;
+      max-width: 800px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+      font-size: 1rem;
+    }
+
+    .comparison-table thead {
+      background: linear-gradient(
+        135deg,
+        #1a1a2e 0%,
+        #2d1b69 50%,
+        #6a4c93 100%
+      );
+    }
+
+    .comparison-table th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: white;
+      letter-spacing: 0.025em;
+    }
+
+    .comparison-table tbody tr {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .comparison-table tbody tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: #f1f5f9;
+      transition: background-color 0.2s ease;
+    }
+
+    .comparison-table td {
+      padding: 1rem 1.5rem;
+      vertical-align: top;
+      line-height: 1.6;
+      color: #4a5568;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .comparison-table td {
+      width: 33%;
+    }
+
+    .comparison-table td:last-child {
+      border-right: none;
+    }
+
+    /* For SQL vs NoSQL table - center aligned headers */
+    .comparison-table th:only-child,
+    .comparison-table thead tr:first-child th {
+      text-align: center;
+    }
+
+    /* Inline code styling */
+    code:not(pre code) {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 0.2em 0.4em;
+      font-size: 0.9em;
+      font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      img,
+      .video-container,
+      .table-container {
+        max-width: 95%;
+        margin: 1.5rem auto;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .comparison-table th {
+        font-size: 1rem;
+      }
+
+      .comparison-table td:first-child {
+        width: auto;
+      }
+
+      .comparison-table td:last-child {
+        width: auto;
+      }
+    }
+  </style>
+</CaseStudyLayout>

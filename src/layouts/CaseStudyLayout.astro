@@ -36,15 +36,20 @@ const { frontmatter } = Astro.props;
       .case-study-container {
         display: flex;
         flex: 1;
+        overflow-x: hidden;
       }
 
       .case-study-content {
         flex: 1;
         margin-left: 300px;
         padding: 3rem 4rem;
-        max-width: 100%;
+        width: calc(
+          100vw - 300px
+        ); /* Prevent content from going under sidebar */
         background: white;
         line-height: 1.5;
+        position: relative;
+        z-index: 1;
       }
 
       /* Content styling */
@@ -198,14 +203,14 @@ const { frontmatter } = Astro.props;
         margin-top: 90px;
       }
 
-      /* Mobile responsiveness */
       @media (max-width: 1024px) {
         .case-study-content {
-          margin-left: 0;
+          margin-left: 0 !important;
           padding: 2rem;
         }
       }
 
+      /* Mobile phones */
       @media (max-width: 768px) {
         .case-study-content {
           padding: 1.5rem;

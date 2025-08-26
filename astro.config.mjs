@@ -1,4 +1,8 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
 
-export default defineConfig({});
+import mdx from '@astrojs/mdx';
+
+export default defineConfig({
+  integrations: [mdx()]
+});

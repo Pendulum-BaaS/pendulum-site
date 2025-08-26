@@ -1,0 +1,419 @@
+---
+import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import { Code } from "astro:components";
+
+const frontMatter = {
+  title: "What is Pendulum?",
+  description: "Description of Pendulum BaaS platform",
+  prevSection: "Background",
+  prevPath: "/case-study/",
+  nextSection: "Using Pendulum",
+  nextPath: "/case-study/using-pendulum/",
+};
+
+const convexServerCode = `// convex/tasks.js
+import { query } from "./_generated/server";
+import { v } from "convex/values";
+
+export const getTasks = query({
+  args: {
+    limit: v.optional(v.number()),
+    offset: v.optional(v.number()),
+    sortBy: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { limit = 20, offset = 0, sortBy = "description" } = args;
+
+    let query = ctx.db.query("tasks");
+
+    // Apply sorting
+    query = query.order("asc", sortBy);
+
+    // Manual pagination handling - no built-in offset with Convex
+    const allResults = await query.collect();
+    const paginatedResults = allResults.slice(offset, offset + limit);
+
+    return {
+      tasks: paginatedResults,
+      hasMore: offset + limit < allResults.length,
+      totalCount: allResults.length
+    };
+  },
+});`;
+
+const convexClientCode = `// frontend component
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+
+export function TaskList() {
+  const tasks = useQuery(api.tasks.getTasks);
+
+  return (
+  ...
+  );
+}'`;
+
+const pendulumCode = `
+// frontend component
+import { PendulumClient } from "@pendulum-baas/sdk";
+const client = new PendulumClient();
+
+export function TaskList() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      const result = await client.db.getSome("tasks", 20, 2);
+      setTasks(result.data);
+    });
+
+    loadTasks();
+  }, []);
+
+  return (
+  ...
+  );
+}`;
+---
+
+<CaseStudyLayout frontmatter={frontMatter}>
+  <h1>Where Does Pendulum Fit In?</h1>
+
+  <h2 id="design-principles">Design Principles</h2>
+
+  <p>
+    While many BaaS platforms require developers to write custom functions for
+    basic operations, Pendulum's philosophy is that a Backend as a Service
+    should eliminate backend complexity, not shift it to the developer.
+  </p>
+
+  <h3>Reactivity and Automatic API Endpoints</h3>
+
+  <p>
+    Many BaaS platforms like Convex require developers to write custom functions
+    for every database operation, resulting in significant boilerplate code.
+    While this approach offers performance benefits through persistent
+    connections, we identified a key drawback: most applications need standard
+    CRUD operations that shouldn't require custom backend code.
+  </p>
+
+  <p>
+    Pendulum provides automatically-generated REST API endpoints for all
+    database operations with real-time updates enabled by default - a single
+    frontend method for subscribing to real-time updates makes your app
+    reactive.
+  </p>
+
+  <p>
+    Here is how a frontend developer would fetch and sort a paginated result
+    from the backend using Convex:
+  </p>
+
+  <div class="code-stack">
+    <div class="example-code">
+      <Code
+        code={convexServerCode}
+        lang="typescript"
+        theme="material-theme-palenight"
+      />
+    </div>
+
+    <div class="example-code">
+      <Code
+        code={convexClientCode}
+        lang="tsx"
+        theme="material-theme-palenight"
+      />
+    </div>
+  </div>
+
+  <p>
+    Here we accomplish the same task with Pendulum using just a single method
+    invocation. Most importantly, <em>all</em> of the code needed for this operation
+    is confined to the frontend.
+  </p>
+
+  <div class="code-stack">
+    <div class="example-code">
+      <Code code={pendulumCode} lang="tsx" theme="material-theme-palenight" />
+    </div>
+  </div>
+
+  <blockquote>
+    <h4>Reactivity Explained</h4>
+    Traditional web apps show stale data - users have to refresh to see changes.
+    Reactivity means your app automatically updates when backend data changes. With
+    Pendulum's reactivity, your app feels alive! Watch how changes made by one user
+    instantly appear for everyone else: when one user creates, updates, or deletes
+    data, other users see these changes reflected in their application immediately.
+
+    <div class="video-container">
+      <video controls width="100%" preload="metadata">
+        <source
+          src="/assets/where-does-pendulum-fit/b2b_apps.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </blockquote>
+
+  <h3>Automated Cloud Deployment</h3>
+
+  <p>
+    We wanted Pendulum to be easy for developers to quickly develop and deploy
+    applications on AWS. With a simple set of terminal commands, Pendulum
+    handles deploying frontend code alongside a scalable, containerized backend
+    to an isolated VPC in the user’s AWS account. There, users manage
+    application data through an intuitive dashboard where data lives entirely in
+    their AWS account.
+  </p>
+
+  <img
+    src="/assets/where-does-pendulum-fit/npx_pendulum_deploy.png"
+    alt="Pendulum Automated Cloud Deployment"
+  />
+
+  <h3>Flexible Data Schema</h3>
+
+  <p>
+    Solo developers and small teams often don't know their exact data
+    requirements upfront. Pendulum's flexible data schema allows developers to
+    start with simple schemas that can evolve organically as application
+    requirements take shape - new fields can be added to documents without
+    affecting existing data or requiring migrations.
+  </p>
+
+  <img
+    src="/assets/where-does-pendulum-fit/schema_change.png"
+    alt="Pendulum CLI"
+  />
+
+  <h2 id="core-components">Core Components</h2>
+
+  <p>
+    These design principles are implemented through Pendulum's four core
+    components:
+  </p>
+
+  <img
+    src="/assets/where-does-pendulum-fit/four_main_components.gif"
+    alt="Four Main Components of Pendulum"
+  />
+
+  <h3>Backend</h3>
+
+  <p>The Pendulum backend is made up of two main services:</p>
+
+  <p>
+    <strong>Application Service</strong> — Responsible for handling all CRUD operations,
+    data validation, authentication, and authorization. This service exposes REST
+    API endpoints for database operations, user management, and permission validation.
+  </p>
+
+  <p>
+    <strong>Events Service</strong> — A real-time events server dedicated to maintaining
+    persistent connections with clients and distributing database change notifications
+    to all subscribed applications.
+  </p>
+
+  <img
+    src="/assets/where-does-pendulum-fit/app_events_servers.gif"
+    alt="Pendulum Backend"
+  />
+
+  <h3>Admin Dashboard</h3>
+
+  <p>
+    The admin dashboard is the developer’s window into the Pendulum backend.
+    Developers can manipulate backend data, view real-time system logs, monitor
+    database operations, and configure collection-level access controls all in
+    one place.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source
+        src="/assets/where-does-pendulum-fit/admin_dashboard_overview.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <h3>Command-Line Interface (CLI)</h3>
+
+  <p>
+    The Pendulum CLI automates the entire development workflow. With four simple
+    commands, developers can initialize a Pendulum-backed project, start the
+    local development environment, and provision or teardown AWS resources in
+    deployment.
+  </p>
+
+  <img src="/assets/where-does-pendulum-fit/CLI.gif" alt="Pendulum CLI" />
+
+  <h3>Software Development Kit (SDK)</h3>
+
+  <p>
+    Pendulum’s SDK is the interface to the Pendulum backend. Developers import
+    the SDK client into their frontend code and instantiate a new instance of
+    the `PendulumClient`. With this, a frontend application automatically
+    connects to the Pendulum backend, and developers get access to methods for
+    standard CRUD operations and real-time data synchronization.
+  </p>
+
+  <img src="/assets/where-does-pendulum-fit/SDK.gif" alt="Pendulum SDK" />
+
+  <p>
+    Given our positioning in the BaaS landscape, here’s how Pendulum fits in:
+  </p>
+
+  <img
+    src="/assets/where-does-pendulum-fit/existing-solutions-table-with-pendulum.svg"
+    alt="Existing BaaS Solutions With Pendulum"
+    style="border:none;box-shadow:none"
+  />
+
+  <style>
+    /* Stacked Code Comparison */
+    .code-stack {
+      margin: 2rem auto;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .code-stack .example-code {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .code-stack .example-code:last-child {
+      margin-bottom: 0;
+    }
+
+    .code-stack .example-code :global(pre) {
+      margin: 0 !important;
+      border-radius: 12px !important;
+      font-size: 0.9rem !important;
+      line-height: 1.6 !important;
+      padding: 1.5rem !important;
+      width: 100% !important;
+      box-sizing: border-box;
+    }
+
+    /* General image styling */
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 2rem auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Specific image sizing */
+    img[src*="npx_pendulum_deploy"] {
+      max-width: 700px;
+    }
+
+    img[src*="schema_change"] {
+      max-width: 700px;
+    }
+
+    img[src*="four_main_components"] {
+      max-width: 700px;
+    }
+
+    img[src*="app_events_servers"] {
+      max-width: 700px;
+    }
+
+    img[src*="CLI"] {
+      max-width: 700px;
+    }
+
+    img[src*="SDK"] {
+      max-width: 700px;
+    }
+
+    img[src*="existing-solutions-table-with-pendulum"] {
+      max-width: 800px;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Video container styling */
+    .video-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+      width: 100%;
+      max-width: 800px;
+      background: #000;
+    }
+
+    .video-container video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+
+    /* Blockquote styling */
+    blockquote {
+      background: #f8f9fa;
+      border-left: 4px solid #666;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    blockquote h4 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    blockquote p {
+      margin-bottom: 1rem;
+    }
+
+    blockquote .video-container {
+      margin-top: 1.5rem;
+      margin-bottom: 0;
+    }
+
+    /* Inline code styling */
+    code:not(pre code) {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 0.2em 0.4em;
+      font-size: 0.9em;
+      font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      img,
+      .video-container {
+        max-width: 95%;
+        margin: 1.5rem auto;
+      }
+
+      .code-stack {
+        max-width: 95%;
+      }
+
+      blockquote {
+        margin: 1.5rem 0;
+        padding: 1rem;
+      }
+    }
+  </style>
+</CaseStudyLayout>

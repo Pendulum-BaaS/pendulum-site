@@ -52,11 +52,11 @@
   }
 
   .team-card img {
-    width: 120px;
-    height: 120px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
     border: 3px solid #f0f0f0;
   }
 
@@ -107,13 +107,29 @@
     margin: 0;
     border-radius: 0;
   }
+
+  .highlight {
+    background: linear-gradient(
+      135deg,
+      #e67e22 0%,
+      #f39c12 30%,
+      #f1c40f 70%,
+      #f4d03f 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 </style>
 <section class="team">
   <div class="container">
-    <h3>Pendulum Team</h3>
+    <h3><span class="highlight">Pendulum Team</span></h3>
     <div class="team-cards">
       <div class="team-card">
-        <img src="/assets/headshot-placeholder.svg" alt="Sean Lacey Headshot" />
+        <img
+          src="/assets/team/sean_lacey_headshot.jpeg"
+          alt="Sean Lacey Headshot"
+        />
         <p class="dev-name">Sean Lacey</p>
         <p class="dev-title">Software Engineer</p>
         <p class="dev-location">Brooklyn, NY</p>
@@ -128,7 +144,7 @@
       </div>
       <div class="team-card">
         <img
-          src="/assets/headshot-placeholder.svg"
+          src="/assets/team/chris_piemonte_headshot.jpg"
           alt="Chris Piemonte Headshot"
         />
         <p class="dev-name">Chris Piemonte</p>
@@ -151,7 +167,7 @@
       </div>
       <div class="team-card">
         <img
-          src="/assets/headshot-placeholder.svg"
+          src="/assets/team/rachel_rusiecki_headshot.jpg"
           alt="Rachel Rusiecki Headshot"
         />
         <p class="dev-name">Rachel Rusiecki</p>
