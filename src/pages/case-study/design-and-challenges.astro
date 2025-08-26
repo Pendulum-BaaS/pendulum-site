@@ -19,15 +19,17 @@ const frontMatter = {
 
   <p>
     To deliver automatic real-time updates across all connected clients, we
-    chose MongoDB because documents naturally map to application objects - when
-    a user updates a project task, we can instantly broadcast the complete task
-    object without server-side data reconstruction.
+    chose MongoDB because documents naturally map to application objects.
+    Consider a project management application built with Pendulum: when a user
+    updates a project task, we can instantly push the full updated task to all
+    connected clients without any backend queries or joins, since MongoDB's
+    document model keeps all the related information together in one place.
   </p>
   <p>
-    This document-based approach also perfectly supports our target users - solo
+    This document-based approach also perfectly supports our target users — solo
     developers and small teams prototyping collaborative applications.
-    Developers can avoid database migrations as their data model evolves, and
-    new fields can be added without breaking existing data.
+    Developers avoid database migrations as their data model evolves, and new
+    fields can be added without breaking existing data.
   </p>
   <p>
     Mongo’s flexible schema suited our needs, but it was not without downsides.
@@ -84,7 +86,7 @@ const frontMatter = {
   <p>
     Frontend developers shouldn't have to worry about complex data validation
     when prototyping applications. While MongoDB's flexible schema enables rapid
-    iteration, malformed data could crash application logic - so we built
+    iteration, malformed data could crash application logic — so we built
     comprehensive validation that runs automatically without any developer
     configuration.
   </p>
@@ -116,9 +118,9 @@ const frontMatter = {
 
   <p>
     Our real-time design consists of a single method call that makes any
-    application reactive - <code
+    application reactive — <code
       >client.realtime.subscribe('collection', callback)</code
-    > - but how do we facilitate this level of simplicity? All CRUD operations with
+    > — but how do we facilitate this level of simplicity? All CRUD operations with
     Pendulum are done over standard HTTP. Given this, we recognized that our real-time
     data synchronization only needed to flow in one direction. When an update occurs,
     the events server pushes updates to connected clients without the need for a
@@ -197,15 +199,14 @@ const frontMatter = {
     To implement this de-coupling, we created an in-memory <code
       >eventClient</code
     > whose sole responsibility is to bridge the two services. When the app service
-    completes a database operation, the <code>eventClient</code>makes a single
-    HTTP POST request to the events service at an internal endpoint with the
-    details of the change. When the events service receives a database event, it
-    distributes the message to all actively connected clients. This separation
-    allows each service to scale independently based on actual usage patterns —
-    a key feature in enabling a scalable architecture. In the end, loosely
-    coupling these services means database operations complete quickly
-    regardless of active users, and real-time updates can be broadcasted without
-    bogging down API responses.
+    completes a database operation, the <code>eventClient</code> makes a single HTTP
+    <code>POST</code> request to the events service at an internal endpoint with
+    the details of the change. When the events service receives a database event,
+    it distributes the message to all actively connected clients. This separation
+    allows each service to scale independently based on actual usage patterns — a
+    key feature in enabling a scalable architecture. In the end, loosely coupling
+    these services means database operations complete quickly regardless of active
+    users, and real-time updates can be broadcast without bogging down API responses.
   </p>
 
   <img
@@ -255,16 +256,15 @@ const frontMatter = {
   <p>
     For Pendulum, we prioritized the use of immediate local updates to improve
     application responsiveness. We implemented a client-side management system
-    to track outgoing database operations and filter corresponding incoming
-    events. When a client performs a mutating database operation, the Pendulum
-    SDK generates and stores a unique <code>operationId</code>. If the events
-    service pushes data with a matching <code>operationId</code>, the SDK
-    ignores it since the change originated from that client and the frontend
-    state was already updated optimistically. While this requires additional
-    infrastructure and cleanup mechanisms, developers get the best of both
-    worlds without any additional code. Applications get the immediate
-    responsiveness of optimistic updates and the consistency ensured by
-    server-first updates.
+    to track outgoing database operations and filter incoming events. When a
+    client performs a mutating database operation, the Pendulum SDK generates
+    and stores a unique <code>operationId</code>. If the events service pushes
+    data with a matching <code>operationId</code>, the SDK ignores it since the
+    change originated from that client and the frontend state was already
+    updated optimistically. While this requires additional infrastructure and
+    cleanup mechanisms, developers get the best of both worlds without any
+    additional code. Applications get the immediate responsiveness of optimistic
+    updates and the consistency ensured by server-first updates.
   </p>
 
   <img
@@ -337,13 +337,14 @@ const frontMatter = {
     > and
     <code>role</code>. The token is signed using a private key, given a 24-hour
     expiration, and sent back to the client in the response. We transmit the JWT
-    in the response’s Authorization Header. The authorization header approach
-    provides greater control over when tokens are sent and maintains cleaner
-    separation of concerns between authentication and other HTTP functionality.
-    It's also the standard method for authenticating API requests in modern web
-    development. While this method typically adds more burden on the developer
-    to manage data on the client side, Pendulum’s SDK handles client-side tokens
-    for developers out-of-the-box.
+    in the response’s <code>Authorization</code> header. The <code
+      >Authorization</code
+    > header approach provides greater control over when tokens are sent and maintains
+    cleaner separation of concerns between authentication and other HTTP functionality.
+    It's also the standard method for authenticating API requests in modern web development.
+    While this method typically adds more burden on the developer to manage data
+    on the client side, Pendulum’s SDK handles client-side tokens for developers
+    out-of-the-box.
   </p>
 
   <img
@@ -398,7 +399,7 @@ const frontMatter = {
     default for all new collections. With flexibility in mind, we leave it to the
     developer to determine and set the appropriate permission levels for collections
     — the Pendulum admin dashboard makes this straightforward and updates are reflected
-    and enforced in the application in real-time.
+    and enforced in the application in real time.
   </p>
 
   <div class="video-container">

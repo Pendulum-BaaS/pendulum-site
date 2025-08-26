@@ -58,7 +58,7 @@ const frontMatter = {
     manually install MongoDB, manage Node.js versions, and handle service
     startup ordering. These isolated containers mirror our production
     architecture, ensuring alignment between the two environments and
-    eliminating the all too common issue of “works on my machine”.
+    eliminating the all-too-common issue of “works on my machine”.
   </p>
 
   <img
@@ -69,7 +69,7 @@ const frontMatter = {
   <h2 id="production-architecture">Production Architecture</h2>
   <p>
     Production systems require load balancing, auto-scaling, managed databases,
-    security groups, and monitoring - complexity that can overwhelm developers.
+    security groups, and monitoring — complexity that can overwhelm developers.
     Pendulum eliminates this friction through Infrastructure-as-Code automation
     using AWS CDK, where a single <code>npx pendulum deploy</code> command provisions
     complete production infrastructure in an isolated VPC.
@@ -89,7 +89,7 @@ const frontMatter = {
     provider flexibility. AWS offers a robust ecosystem of managed services,
     extensive documentation, and the most widespread adoption of any cloud
     provider. We accepted the tradeoff of vendor lock-in for production
-    deployments, but our open-source codebase enables users to adapt Pendulum
+    deployments, but our open source codebase enables users to adapt Pendulum
     for other providers if needed. Single-command deployments deliver more value
     than multi-cloud flexibility for developers focused on building frontend
     applications.
@@ -133,24 +133,14 @@ const frontMatter = {
       </thead>
       <tbody>
         <tr>
-          <td>High complexity - YAML configs, cluster management</td>
-          <td>High complexity - manual scaling, patching, monitoring</td>
-          <td>Low complexity - zero server management</td>
+          <td>High complexity — YAML configs, cluster management</td>
+          <td>High complexity — manual scaling, patching, monitoring</td>
+          <td>Low complexity — zero server management</td>
         </tr>
         <tr>
           <td>Advanced auto-scaling with custom metrics</td>
           <td>Manual or basic auto-scaling groups</td>
           <td>Automatic scaling based on CPU/memory</td>
-        </tr>
-        <tr>
-          <td>Fine-grained resource limits and requests</td>
-          <td>Complete hardware control</td>
-          <td>Limited to predefined CPU/memory combinations</td>
-        </tr>
-        <tr>
-          <td>Complex service meshes, custom networking policies</td>
-          <td>Full network control, custom configurations</td>
-          <td>Integrated AWS networking, security groups</td>
         </tr>
         <tr>
           <td>Portable across cloud providers</td>
@@ -161,11 +151,6 @@ const frontMatter = {
           <td>Complex RBAC, network policies, secrets</td>
           <td>Manual security patching and hardening</td>
           <td>AWS-managed security, automatic patching</td>
-        </tr>
-        <tr>
-          <td>Advanced service discovery with DNS, service mesh</td>
-          <td>Manual service discovery configuration or load balancer setup</td>
-          <td>Built-in service connect and load balancing</td>
         </tr>
       </tbody>
     </table>
@@ -207,14 +192,14 @@ const frontMatter = {
       <tbody>
         <tr>
           <td
-            >High operational overhead - manual installation, configuration,
+            >High operational overhead — manual installation, configuration,
             updates</td
           >
-          <td>Zero operational overhead - fully managed service</td>
+          <td>Zero operational overhead — fully managed service</td>
         </tr>
         <tr>
-          <td>Manual scaling - resize instances, configure sharding</td>
-          <td>Automatic scaling - scale compute and storage independently</td>
+          <td>Manual scaling — resize instances, configure sharding</td>
+          <td>Automatic scaling — scale compute and storage independently</td>
         </tr>
         <tr>
           <td
@@ -222,29 +207,6 @@ const frontMatter = {
             restoration</td
           >
           <td>Automatic backups, point-in-time recovery</td>
-        </tr>
-        <tr>
-          <td>Manual availability - configure replica sets, failover logic</td>
-          <td
-            >Automatic availability - multi-AZ replication with automatic
-            failover</td
-          >
-        </tr>
-        <tr>
-          <td
-            >Manual security management - OS patching, MongoDB updates,
-            hardening</td
-          >
-          <td
-            >Managed security management - automatic patching, integrated
-            security groups</td
-          >
-        </tr>
-        <tr>
-          <td>Manual monitoring - set up CloudWatch, custom alerts</td>
-          <td
-            >Built-in monitoring - CloudWatch integration, performance insights</td
-          >
         </tr>
         <tr>
           <td>100% full MongoDB feature set</td>
@@ -257,7 +219,7 @@ const frontMatter = {
   <h3>Load Balancing and Traffic Management</h3>
 
   <p>
-    Our microservices architecture creates routing complexity - frontend
+    Our microservices architecture creates routing complexity — frontend
     requests need to reach the right service, services need to find each other
     when scaling, and developers expect a single endpoint for their SDK. AWS’
     Cloud Map lets us implement service discovery so that our backend services
@@ -303,6 +265,10 @@ const frontMatter = {
       display: block;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    img[src*="aws"] {
+      max-width: 800px;
     }
 
     /* Video container styling */
