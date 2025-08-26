@@ -218,3 +218,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Nuclear option - override ALL image shadows */
+img {
+  box-shadow: none !important;
+}
+
+/* More specific targeting */
+[data-astro-cid-ismo7tuc] img,
+img[data-astro-cid-ismo7tuc],
+img[data-astro-cid-ismo7tuc7] {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Target by source path */
+img[src*="assets/background"] {
+  box-shadow: none !important;
+}
+
+/* Target all GIFs */
+img[src$=".gif"] {
+  box-shadow: none !important;
+}
