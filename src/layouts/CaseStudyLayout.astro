@@ -113,29 +113,57 @@ function shouldExpand(section: any): boolean {
       body {
         height: 100vh;
         margin: 0;
-        overflow: hidden;
         background: white;
         color: #666;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
         padding-top: 70px;
         display: flex;
         flex-direction: column;
+        /* Default to auto overflow, we'll override for desktop */
+        overflow: auto;
+      }
+
+      /* Desktop-specific scrolling behavior */
+      @media (min-width: 1025px) {
+        body {
+          overflow: hidden;
+        }
       }
 
       .page-wrapper {
         flex: 1;
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 70px);
-        overflow: hidden;
+        /* Default mobile-friendly values */
+        height: auto;
+        min-height: calc(100vh - 70px);
+        overflow: visible;
+      }
+
+      /* Desktop-specific container behavior */
+      @media (min-width: 1025px) {
+        .page-wrapper {
+          height: calc(100vh - 70px);
+          overflow: hidden;
+        }
       }
 
       /* Main container using CSS Grid for clean separation */
       .case-study-container {
         display: grid;
         grid-template-columns: 300px 1fr;
-        flex: 1;
-        overflow: hidden;
+        /* Default mobile-friendly values */
+        height: auto;
+        min-height: calc(100vh - 70px);
+        overflow: visible;
+      }
+
+      /* Desktop-specific grid behavior */
+      @media (min-width: 1025px) {
+        .case-study-container {
+          flex: 1;
+          overflow: hidden;
+        }
       }
 
       /* Sidebar - Fixed position but within grid */
@@ -155,11 +183,20 @@ function shouldExpand(section: any): boolean {
         line-height: 1.5;
         position: relative;
         z-index: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
+        /* Default mobile-friendly values */
+        overflow: visible;
+        height: auto;
+      }
+
+      /* Desktop-specific content scrolling */
+      @media (min-width: 1025px) {
+        .case-study-content {
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
       }
 
       /* Hamburger menu - hidden by default */
@@ -232,11 +269,15 @@ function shouldExpand(section: any): boolean {
         background: rgba(0, 0, 0, 0.5);
         z-index: 47;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        pointer-events: none;
       }
 
       .mobile-sidebar-overlay.show {
         opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
       }
 
       /* Mobile sidebar */
@@ -537,9 +578,27 @@ function shouldExpand(section: any): boolean {
 
       /* Responsive Design */
       @media (max-width: 1024px) {
+        html {
+          overflow: auto;
+        }
+
+        body {
+          overflow: auto;
+          height: auto;
+          min-height: 100vh;
+        }
+
+        .page-wrapper {
+          height: auto;
+          min-height: calc(100vh - 70px);
+          overflow: visible;
+        }
+
         .case-study-container {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto 1fr;
+          display: block;
+          height: auto;
+          min-height: auto;
+          overflow: visible;
         }
         
         .case-study-sidebar {
@@ -556,8 +615,9 @@ function shouldExpand(section: any): boolean {
         
         .case-study-content {
           padding: 2rem 8%;
-          grid-column: 1;
-          grid-row: 1;
+          padding-top: 4rem;
+          overflow: visible;
+          height: auto;
         }
       }
 
@@ -565,6 +625,7 @@ function shouldExpand(section: any): boolean {
       @media (max-width: 768px) {
         .case-study-content {
           padding: 1.5rem 7%;
+          padding-top: 4rem;
         }
 
         .case-study-content h1 {
@@ -580,6 +641,7 @@ function shouldExpand(section: any): boolean {
       @media (max-width: 480px) {
         .case-study-content {
           padding: 1rem 6%;
+          padding-top: 4rem;
         }
       }
 
