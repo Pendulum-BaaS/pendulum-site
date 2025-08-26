@@ -11,44 +11,6 @@ const deploymentCode = `
   $ npx pendulum deploy   # deploy to AWS
 \n
 `;
-
-const crudCode = `
-  import { PendulumClient } from "@pendulum-baas/sdk";
-
-  const client = new PendulumClient();
-
-  const loadItems = async () => {
-    const response = await client.db.getAll("items");
-
-    if (response.success) {
-      setItems(response.data);
-    } else {
-      setError(response.error);
-    }
-  };
-\n
-`;
-
-const realtimeCode = `
-  const updateItems = (message) => {
-    const { action, eventData } = message;
-
-    if (action === "insert") {
-      setItems(prev => [...eventData.affected, prev]);
-    }
-  };
-
-  useEffect(() => {
-    loadItems();
-
-    client.realtime.subscribe("items", updateItems);
-
-    return () => {
-      client.realtime.unsubscribe("items", updateItems);
-    }
-  }, []);
-
-  `;
 ---
 
 <!doctype html>
@@ -242,7 +204,7 @@ const realtimeCode = `
 
     .example {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 2fr 3fr;
       gap: 4rem;
       align-items: center;
       margin-bottom: 10rem;
@@ -407,17 +369,17 @@ const realtimeCode = `
       <div class="example reverse">
         <div class="example-content">
           <h3>
-            CRUD Operations <span class="highlight">Out-of-the-Box</span>
+            <span class="highlight">AI-Powered</span> Backend Insights
           </h3>
           <p>
-            No need to write extensive SQL or more JavaScript functions just to
-            perform the standard database operations. Pendulum's SDK provides
-            frontend developers with CRUD operations out-of-the-box.
+            Get insights into your backend state through our MCP server
+            integration. Get real-time insights into service health, connected
+            clients, and recent data changes all with natural language queries.
           </p>
         </div>
         <div class="example-code">
           <Code
-            code={crudCode}
+            code="THIS IS A PLACEHOLDER FOR MCP VISUAL"
             lang="typescript"
             theme="material-theme-palenight"
           />
@@ -438,11 +400,13 @@ const realtimeCode = `
           </p>
         </div>
         <div class="example-code">
-          <Code
-            code={realtimeCode}
-            lang="typescript"
-            theme="material-theme-palenight"
-          />
+          <video controls width="100%" preload="metadata">
+            <source
+              src="/assets/where-does-pendulum-fit/reactivity.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
 

@@ -84,22 +84,26 @@ export function TaskList() {
   <p>
     While many BaaS platforms require developers to write custom functions for
     basic operations, Pendulum's philosophy is that a Backend as a Service
-    should eliminate backend complexity, not shift it to the developer.
+    should eliminate backend complexity, not shift it to the developer. We
+    identified a few core principles that guided our design of Pendulum to
+    deliver on this philosophy.
   </p>
 
   <h3>Reactivity and Automatic API Endpoints</h3>
 
   <p>
-    Many BaaS platforms like Convex require developers to write custom functions
+    Some BaaS platforms like Convex require developers to write custom functions
     for every database operation, resulting in significant boilerplate code.
-    While this approach offers performance benefits through persistent
-    connections, we identified a key drawback: most applications need standard
-    CRUD operations that shouldn't require custom backend code.
+    This happens because, instead of dedicated REST API endpoints reached via
+    HTTP, Convex uses a WebSocket connection for both database operations and
+    real-time updates. While this approach allows for faster real-time updates,
+    we identified a key drawback: most applications need standard CRUD
+    operations that shouldn't require custom backend code.
   </p>
 
   <p>
     Pendulum provides automatically-generated REST API endpoints for all
-    database operations with real-time updates enabled by default - a single
+    database operations with real-time updates enabled by default — a single
     frontend method for subscribing to real-time updates makes your app
     reactive.
   </p>
@@ -256,10 +260,11 @@ export function TaskList() {
 
   <p>
     Pendulum’s SDK is the interface to the Pendulum backend. Developers import
-    the SDK client into their frontend code and instantiate a new instance of
-    the `PendulumClient`. With this, a frontend application automatically
-    connects to the Pendulum backend, and developers get access to methods for
-    standard CRUD operations and real-time data synchronization.
+    the SDK client into their frontend code and create a new instance of the <code
+      >PendulumClient</code
+    >. With this, a frontend application automatically connects to the Pendulum
+    backend, and developers get access to methods for standard CRUD operations
+    and real-time data synchronization.
   </p>
 
   <img src="/assets/where-does-pendulum-fit/SDK.gif" alt="Pendulum SDK" />
@@ -271,7 +276,7 @@ export function TaskList() {
   <img
     src="/assets/where-does-pendulum-fit/existing-solutions-table-with-pendulum.svg"
     alt="Existing BaaS Solutions With Pendulum"
-    style="border:none;box-shadow:none"
+    style="border:none;box-shadow:none;border-radius:0"
   />
 
   <style>

@@ -95,8 +95,8 @@ $ npm run pendulum-backend:stop
 
   <p>
     Once the Pendulum CLI tool has been installed, running the <code>init</code>
-    command installs the SDK and backend packages, and adds a couple helpful npm
-    scripts for stopping and starting the backend.
+    command installs the SDK and backend packages, and adds npm scripts for stopping
+    and starting the backend.
   </p>
 
   <div class="video-container">
@@ -134,7 +134,10 @@ $ npm run pendulum-backend:stop
     <Code code={realtimeFn} lang="ts" theme="material-theme-palenight" />
     <div class="code-caption">
       <code>updateItems</code> is the callback function that runs when the client
-      receives an update from the Pendulum events server.
+      receives an update from the Pendulum events server. Each message sent by the
+      events server contains a field to indicate what type of database event took
+      place. Developers can use this field to take different actions for each kind
+      of mutation.
     </div>
   </div>
 
@@ -147,10 +150,11 @@ $ npm run pendulum-backend:stop
   </div>
 
   <p>
-    On mount, we can fetch the items from the backend with a GET request. In
-    that same effect we also subscribe to the <code>items</code> collection, passing
-    in the <code>updateItems</code> function as the callback. Now, every time the
-    events server pushes an update to the client, the <code>updateItems</code> function
+    On mount, we can fetch the items from the backend with a <code>GET</code> request
+    facilitated by the SDK client's <code>getAll</code> database method. In that
+    same effect we also subscribe to the <code>items</code> collection, passing in
+    the <code>updateItems</code> function as the callback. Now, every time the events
+    server pushes an update to the client, the <code>updateItems</code> function
     runs and updates the frontend state.
   </p>
 
@@ -208,8 +212,8 @@ $ npm run pendulum-backend:stop
   <p>
     Conversely, deployments can be torn down and destroyed at any time with the <code
       >destroy</code
-    > command. This command will destroy each AWS CloudFormation stack associated
-    with the deployment.
+    > command. This command will delete AWS CloudFormation stack associated with
+    the deployment.
   </p>
 
   <div class="video-container">
