@@ -5,6 +5,91 @@ import Footer from "../components/Footer.astro";
 import Sidebar from "../components/Sidebar.astro";
 
 const { frontmatter } = Astro.props;
+const { pathname } = Astro.url;
+
+const navigation = [
+  {
+    label: "Background",
+    link: "/case-study/",
+    anchors: [
+      { label: "Introduction", anchor: "#intro" },
+      { label: "Cloud Service Models", anchor: "#cloud-service-models" },
+      {
+        label: "Modern Web Application Structure",
+        anchor: "#modern-web-application-structure",
+      },
+      {
+        label: "The Use Case for BaaS",
+        anchor: "#use-case-for-baas",
+      },
+    ],
+  },
+  {
+    label: "Where Does Pendulum Fit In?",
+    link: "/case-study/where-does-pendulum-fit/",
+    anchors: [
+      { label: "Design Principles", anchor: "#design-principles" },
+      { label: "Core Components", anchor: "#core-components" },
+    ],
+  },
+  {
+    label: "Using Pendulum",
+    link: "/case-study/using-pendulum/",
+    anchors: [
+      { label: "Local Development", anchor: "#local-development" },
+      { label: "Production", anchor: "#production" },
+    ],
+  },
+  {
+    label: "Design Decisions & Implementation Challenges",
+    link: "/case-study/design-and-challenges/",
+    anchors: [
+      { label: "The Database — SQL vs. NoSQL", anchor: "#the-database" },
+      { label: "Data Validation", anchor: "#data-validation" },
+      { label: "Enabling Reactivity", anchor: "#enabling-reactivity" },
+      { label: "Backend Design", anchor: "#backend-design" },
+      {
+        label: "Handling Reactivity in the Frontend",
+        anchor: "#frontend-reactivity",
+      },
+      { label: "Authentication and Authorization", anchor: "#auth" },
+      { label: "Admin Dashboard Design", anchor: "#admin-dashboard-design" },
+    ],
+  },
+  {
+    label: "Architecture",
+    link: "/case-study/architecture/",
+    anchors: [
+      { label: "Local Development Experience", anchor: "#local-development" },
+      { label: "Production Architecture", anchor: "#production-architecture" },
+    ],
+  },
+  {
+    label: "Future Work",
+    link: "/case-study/future-work/",
+    anchors: [
+      { label: "Multi-Tenant Architecture", anchor: "#multi-tenant" },
+      { label: "File Storage Integration", anchor: "#file-storage" },
+      { label: "Greater Scalability Control", anchor: "#scalability-control" },
+      {
+        label: "Additional Cloud Provider Support",
+        anchor: "#additional-cloud-providers",
+      },
+    ],
+  },
+];
+
+function isCurrentPage(link: string): boolean {
+  return pathname === link || pathname === link.replace(/\/$/, "");
+}
+
+function isCurrentSection(section: any): boolean {
+  return isCurrentPage(section.link);
+}
+
+function shouldExpand(section: any): boolean {
+  return isCurrentSection(section);
+}
 ---
 
 <html lang="en" data-theme="light">
@@ -22,46 +107,322 @@ const { frontmatter } = Astro.props;
         overflow: hidden;
         background: white;
         color: #666;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
       }
 
       body {
         height: 100vh;
         margin: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
         background: white;
         color: #666;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
         padding-top: 70px;
         display: flex;
         flex-direction: column;
+        /* Default to auto overflow, we'll override for desktop */
+        overflow: auto;
+      }
+
+      /* Desktop-specific scrolling behavior */
+      @media (min-width: 1025px) {
+        body {
+          overflow: hidden;
+        }
       }
 
       .page-wrapper {
         flex: 1;
         display: flex;
         flex-direction: column;
-      }
-
-      .case-study-container {
-        display: flex;
+        /* Default mobile-friendly values */
+        height: auto;
         min-height: calc(100vh - 70px);
+        overflow: visible;
       }
 
+      /* Desktop-specific container behavior */
+      @media (min-width: 1025px) {
+        .page-wrapper {
+          height: calc(100vh - 70px);
+          overflow: hidden;
+        }
+      }
+
+      /* Main container using CSS Grid for clean separation */
+      .case-study-container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        /* Default mobile-friendly values */
+        height: auto;
+        min-height: calc(100vh - 70px);
+        overflow: visible;
+      }
+
+      /* Desktop-specific grid behavior */
+      @media (min-width: 1025px) {
+        .case-study-container {
+          flex: 1;
+          overflow: hidden;
+        }
+      }
+
+      /* Sidebar - Fixed position but within grid */
+      .case-study-sidebar {
+        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 2rem 0;
+        z-index: 40;
+      }
+
+      /* Content area - Takes remaining space with its own scroll */
       .case-study-content {
-        flex: 1;
-        margin-left: 300px;
-        padding: 3rem 4rem;
-        width: calc(
-          100vw - 300px
-        ); /* Prevent content from going under sidebar */
         background: white;
+        padding: 3rem 12% 3rem 12%;
         line-height: 1.5;
         position: relative;
         z-index: 1;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        /* Default mobile-friendly values */
+        overflow: visible;
+        height: auto;
+      }
+
+      /* Desktop-specific content scrolling */
+      @media (min-width: 1025px) {
+        .case-study-content {
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+      }
+
+      /* Hamburger menu - hidden by default */
+      .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        top: 85px;
+        left: 1rem;
+        z-index: 60;
+        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+      }
+
+      .mobile-menu-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Hamburger icon */
+      .hamburger {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .hamburger span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: white;
+        margin: 2px 0;
+        transition: all 0.3s ease;
+        border-radius: 1px;
+      }
+
+      /* Better X animation when menu is open */
+      .mobile-menu-toggle.open .hamburger span:nth-child(1) {
+        transform: rotate(45deg) translate(4px, 4px);
+        width: 18px;
+      }
+
+      .mobile-menu-toggle.open .hamburger span:nth-child(2) {
+        opacity: 0;
+        transform: scale(0);
+      }
+
+      .mobile-menu-toggle.open .hamburger span:nth-child(3) {
+        transform: rotate(-45deg) translate(4px, -4px);
+        width: 18px;
+      }
+
+      /* Mobile sidebar overlay */
+      .mobile-sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 47;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        pointer-events: none;
+      }
+
+      .mobile-sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      /* Mobile sidebar */
+      .mobile-sidebar {
+        position: fixed;
+        top: 70px;
+        left: -300px;
+        width: 300px;
+        height: calc(100vh - 70px);
+        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        z-index: 48;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .mobile-sidebar.show {
+        left: 0;
+      }
+
+      /* When mobile menu is open, move the hamburger button to top-left of sidebar */
+      .mobile-menu-toggle.open {
+        left: 1rem;
+        top: 85px;
+        z-index: 65;
+      }
+
+      /* Yellow glow on hover when menu is open */
+      .mobile-menu-toggle.open:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(241, 196, 15, 0.8), 0 6px 16px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, #5a3f7e 0%, #6a4c93 25%, #7a6f9a 50%, #8a7ca8 75%, #9a8fb7 100%);
+      }
+
+      .mobile-sidebar .sidebar-content {
+        padding: 5rem 1.5rem 2rem 1.5rem;
+      }
+
+      /* Mobile sidebar navigation styles */
+      .mobile-sidebar .nav-section {
+        margin-bottom: 0.25rem;
+      }
+
+      .mobile-sidebar .nav-item {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        border-radius: 8px;
+        margin: 0.125rem 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+        position: relative;
+      }
+
+      .mobile-sidebar .nav-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        transform: translateX(4px);
+      }
+
+      .mobile-sidebar .nav-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: transparent;
+        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        font-weight: 600;
+      }
+
+      .mobile-sidebar .nav-item.parent {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        padding-left: 0.75rem;
+      }
+
+      .mobile-sidebar .nav-item.parent.expanded {
+        background: rgba(255, 255, 255, 0.1);
+        color: transparent;
+        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+      }
+
+      .mobile-sidebar .nav-children {
+        margin-left: 0.75rem;
+        border-left: 2px solid #f39c12;
+        padding-left: 0.75rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+
+      .mobile-sidebar .nav-children::before {
+        content: '';
+        position: absolute;
+        left: -2px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+      }
+
+      .mobile-sidebar .nav-children .anchor-link {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+        font-weight: 400;
+        margin: 0.125rem 0;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .mobile-sidebar .nav-children .anchor-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: transparent;
+        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        font-weight: 600;
+        border-left-color: #f39c12;
+      }
+
+      .mobile-sidebar .nav-children .anchor-link.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: transparent;
+        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        font-weight: 600;
+        border-left-color: #f39c12;
+        box-shadow: 0 2px 8px rgba(230, 126, 34, 0.3);
+      }
+
+      .mobile-sidebar .expand-icon {
+        display: inline-block;
+        margin-right: 0.75rem;
+        transition: transform 0.2s ease;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        width: 12px;
+      }
+
+      .mobile-sidebar .expand-icon.expanded {
+        transform: rotate(90deg);
+        color: #f39c12;
       }
 
       /* Content styling */
@@ -169,13 +530,7 @@ const { frontmatter } = Astro.props;
       }
 
       .nav-button:hover {
-        background: linear-gradient(
-          135deg,
-          #e67e22 0%,
-          #f39c12 30%,
-          #f1c40f 70%,
-          #f4d03f 100%
-        );
+        background: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
         color: white;
         text-decoration: none;
         transform: translateY(-1px);
@@ -210,22 +565,69 @@ const { frontmatter } = Astro.props;
         font-weight: 600;
       }
 
+      /* Heading anchor adjustments */
       h2[id],
       h3[id] {
-        margin-top: 90px;
+        scroll-margin-top: 90px;
+        padding-top: 90px;
+        margin-top: -90px;
       }
 
+      /* Content wrapper to ensure footer stays at bottom */
+      .content-wrapper {
+        flex: 1;
+      }
+
+      /* Responsive Design */
       @media (max-width: 1024px) {
+        html {
+          overflow: auto;
+        }
+
+        body {
+          overflow: auto;
+          height: auto;
+          min-height: 100vh;
+        }
+
+        .page-wrapper {
+          height: auto;
+          min-height: calc(100vh - 70px);
+          overflow: visible;
+        }
+
+        .case-study-container {
+          display: block;
+          height: auto;
+          min-height: auto;
+          overflow: visible;
+        }
+        
+        .case-study-sidebar {
+          display: none;
+        }
+
+        .mobile-menu-toggle {
+          display: block;
+        }
+
+        .mobile-sidebar-overlay {
+          display: block;
+        }
+        
         .case-study-content {
-          margin-left: 0 !important;
-          padding: 2rem;
+          padding: 2rem 8%;
+          padding-top: 4rem;
+          overflow: visible;
+          height: auto;
         }
       }
 
       /* Mobile phones */
       @media (max-width: 768px) {
         .case-study-content {
-          padding: 1.5rem;
+          padding: 1.5rem 7%;
+          padding-top: 4rem;
         }
 
         .case-study-content h1 {
@@ -236,56 +638,187 @@ const { frontmatter } = Astro.props;
           font-size: 1.75rem;
         }
       }
+
+      /* Very small screens */
+      @media (max-width: 480px) {
+        .case-study-content {
+          padding: 1rem 6%;
+          padding-top: 4rem;
+        }
+      }
+
+      /* Custom scrollbar for sidebar */
+      .case-study-sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .case-study-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .case-study-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+      }
+
+      .case-study-sidebar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
     </style>
   </head>
   <body>
     <Header />
+    
+    <!-- Mobile menu toggle button -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+
+    <!-- Mobile sidebar overlay -->
+    <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
+    
+    <!-- Mobile sidebar -->
+    <aside class="mobile-sidebar" id="mobileSidebar">
+      <div class="sidebar-content">
+        <nav>
+          {
+            navigation.map((section) => (
+              <div class="nav-section">
+                <a
+                  href={section.link}
+                  class={`nav-item parent ${shouldExpand(section) ? "expanded" : ""} ${isCurrentPage(section.link) ? "active" : ""}`}
+                >
+                  {section.anchors.length > 0 && (
+                    <span
+                      class={`expand-icon ${shouldExpand(section) ? "expanded" : ""}`}
+                    >
+                      ▶
+                    </span>
+                  )}
+                  {section.label}
+                </a>
+
+                {section.anchors.length > 0 && shouldExpand(section) && (
+                  <div class="nav-children">
+                    {section.anchors.map((anchor) => (
+                      <a
+                        href={`${section.link}${anchor.anchor}`}
+                        class="nav-item anchor-link"
+                      >
+                        {anchor.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          }
+        </nav>
+      </div>
+    </aside>
+
     <div class="page-wrapper">
+      <!-- Use CSS Grid for clean container separation -->
       <div class="case-study-container">
-        <Sidebar />
+        <!-- Sidebar - First grid item -->
+        <aside class="case-study-sidebar">
+          <Sidebar />
+        </aside>
+        
+        <!-- Main content - Second grid item -->
         <main class="case-study-content">
-          <slot />
+          <div class="content-wrapper">
+            <slot />
 
-          <nav class="section-navigation">
-            {
-              frontmatter.prevSection && (
-                <a href={frontmatter.prevPath} class="nav-button prev">
-                  <span>←</span>
-                  <div class="nav-button-text">
-                    <span class="nav-button-label">Previous</span>
-                    <span class="nav-button-title" id="prevTitle">
-                      {frontmatter.prevSection}
-                    </span>
-                  </div>
-                </a>
-              )
-            }
+            <nav class="section-navigation">
+              {
+                frontmatter.prevSection && (
+                  <a href={frontmatter.prevPath} class="nav-button prev">
+                    <span>←</span>
+                    <div class="nav-button-text">
+                      <span class="nav-button-label">Previous</span>
+                      <span class="nav-button-title" id="prevTitle">
+                        {frontmatter.prevSection}
+                      </span>
+                    </div>
+                  </a>
+                )
+              }
 
-            {!frontmatter.prevSection && <div />}
+              {!frontmatter.prevSection && <div />}
 
-            {
-              frontmatter.nextSection && (
-                <a href={frontmatter.nextPath} class="nav-button next">
-                  <div class="nav-button-text">
-                    <span class="nav-button-label">Next</span>
-                    <span class="nav-button-title" id="nextTitle">
-                      {frontmatter.nextSection}
-                    </span>
-                  </div>
-                  <span>→</span>
-                </a>
-              )
-            }
-          </nav>
+              {
+                frontmatter.nextSection && (
+                  <a href={frontmatter.nextPath} class="nav-button next">
+                    <div class="nav-button-text">
+                      <span class="nav-button-label">Next</span>
+                      <span class="nav-button-title" id="nextTitle">
+                        {frontmatter.nextSection}
+                      </span>
+                    </div>
+                    <span>→</span>
+                  </a>
+                )
+              }
+            </nav>
+          </div>
+          
+          <!-- Footer inside content area -->
+          <Footer />
         </main>
       </div>
-      <Footer />
     </div>
 
     <script>
-      // Simple scroll offset solution
+      // Mobile menu functionality
       document.addEventListener("DOMContentLoaded", function () {
-        // Add padding-top to all headings with IDs
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+
+        function toggleMobileMenu() {
+          const isOpen = mobileSidebar.classList.contains('show');
+          
+          if (isOpen) {
+            // Close menu
+            mobileMenuToggle.classList.remove('open');
+            mobileSidebar.classList.remove('show');
+            mobileSidebarOverlay.classList.remove('show');
+          } else {
+            // Open menu
+            mobileMenuToggle.classList.add('open');
+            mobileSidebar.classList.add('show');
+            mobileSidebarOverlay.classList.add('show');
+          }
+        }
+
+        // Toggle menu when button is clicked
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when overlay is clicked
+        mobileSidebarOverlay.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when a navigation link is clicked
+        mobileSidebar.addEventListener('click', function(e) {
+          if (e.target.tagName === 'A') {
+            toggleMobileMenu();
+          }
+        });
+
+        // Close menu on window resize if screen gets large enough
+        window.addEventListener('resize', function() {
+          if (window.innerWidth > 1024) {
+            mobileMenuToggle.classList.remove('open');
+            mobileSidebar.classList.remove('show');
+            mobileSidebarOverlay.classList.remove('show');
+          }
+        });
+
+        // Original scroll highlight functionality
         const headings = document.querySelectorAll(
           "h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]",
         );

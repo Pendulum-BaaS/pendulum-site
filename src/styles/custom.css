@@ -217,6 +217,74 @@
   .team-grid {
     grid-template-columns: 1fr;
   }
+
+  /* MOBILE RESPONSIVE IMAGES - GLOBAL FIX */
+  /* Target content images but exclude header/nav images */
+  main img,
+  section img,
+  article img,
+  .case-study-content img,
+  .content-wrapper img,
+  img[src*=".gif"],
+  img[src*="assets/where-does-pendulum-fit/"],
+  img[src*="assets/design-implementation/"],
+  img[src*="assets/architecture/"],
+  img[src*="assets/background/"],
+  .example-code img,
+  .video-container img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 1.5rem auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Special handling for team member images - keep them circular */
+  .team-member img {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    margin: 0 auto 1rem auto !important;
+  }
+
+  /* Keep header/nav/footer images at their original size */
+  header img,
+  nav img,
+  footer img,
+  .header-title img,
+  .footer-social img,
+  #header img {
+    width: auto !important;
+    height: 40px !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even more aggressive responsive images for very small screens */
+  img,
+  [data-astro-cid] img,
+  img[src*=".gif"],
+  img[src*=".png"],
+  img[src*=".jpg"],
+  img[src*=".jpeg"],
+  img[src*="assets/"],
+  .example-code img,
+  .video-container img,
+  main img,
+  section img,
+  article img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 1rem auto !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
 }
 
 /* Nuclear option - override ALL image shadows */
