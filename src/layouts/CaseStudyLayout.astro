@@ -16,11 +16,10 @@ const { frontmatter } = Astro.props;
     <title>Pendulum - {frontmatter.title}</title>
     <link rel="stylesheet" href="/src/styles/custom.css" />
     <style>
-      html,
-      body {
+      html {
         height: 100%;
         margin: 0;
-        overflow-y: scroll;
+        overflow: hidden;
         background: white;
         color: #666;
         font-family:
@@ -28,16 +27,28 @@ const { frontmatter } = Astro.props;
       }
 
       body {
+        height: 100vh;
+        margin: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: white;
+        color: #666;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        padding-top: 70px;
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
-        padding-top: 70px;
+      }
+
+      .page-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .case-study-container {
         display: flex;
-        flex: 1;
-        overflow-x: hidden;
+        min-height: calc(100vh - 70px);
       }
 
       .case-study-content {
@@ -138,8 +149,8 @@ const { frontmatter } = Astro.props;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 4rem 0 2rem 0;
-        padding: 2rem 0;
+        margin: 4rem 0 0 0;
+        padding: 2rem 0 0.5rem 0;
         border-top: 1px solid #e5e7eb;
       }
 
@@ -229,45 +240,47 @@ const { frontmatter } = Astro.props;
   </head>
   <body>
     <Header />
-    <div class="case-study-container">
-      <Sidebar />
-      <main class="case-study-content">
-        <slot />
+    <div class="page-wrapper">
+      <div class="case-study-container">
+        <Sidebar />
+        <main class="case-study-content">
+          <slot />
 
-        <nav class="section-navigation">
-          {
-            frontmatter.prevSection && (
-              <a href={frontmatter.prevPath} class="nav-button prev">
-                <span>←</span>
-                <div class="nav-button-text">
-                  <span class="nav-button-label">Previous</span>
-                  <span class="nav-button-title" id="prevTitle">
-                    {frontmatter.prevSection}
-                  </span>
-                </div>
-              </a>
-            )
-          }
+          <nav class="section-navigation">
+            {
+              frontmatter.prevSection && (
+                <a href={frontmatter.prevPath} class="nav-button prev">
+                  <span>←</span>
+                  <div class="nav-button-text">
+                    <span class="nav-button-label">Previous</span>
+                    <span class="nav-button-title" id="prevTitle">
+                      {frontmatter.prevSection}
+                    </span>
+                  </div>
+                </a>
+              )
+            }
 
-          {!frontmatter.prevSection && <div />}
+            {!frontmatter.prevSection && <div />}
 
-          {
-            frontmatter.nextSection && (
-              <a href={frontmatter.nextPath} class="nav-button next">
-                <div class="nav-button-text">
-                  <span class="nav-button-label">Next</span>
-                  <span class="nav-button-title" id="nextTitle">
-                    {frontmatter.nextSection}
-                  </span>
-                </div>
-                <span>→</span>
-              </a>
-            )
-          }
-        </nav>
-      </main>
+            {
+              frontmatter.nextSection && (
+                <a href={frontmatter.nextPath} class="nav-button next">
+                  <div class="nav-button-text">
+                    <span class="nav-button-label">Next</span>
+                    <span class="nav-button-title" id="nextTitle">
+                      {frontmatter.nextSection}
+                    </span>
+                  </div>
+                  <span>→</span>
+                </a>
+              )
+            }
+          </nav>
+        </main>
+      </div>
+      <Footer />
     </div>
-    <Footer />
 
     <script>
       // Simple scroll offset solution
