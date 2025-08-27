@@ -305,7 +305,7 @@ function shouldExpand(section: any): boolean {
       .mobile-sidebar {
         position: fixed;
         top: 70px;
-        left: -300px;
+        left: -100%;
         width: 300px;
         height: calc(100vh - 70px);
         background: linear-gradient(
@@ -319,11 +319,12 @@ function shouldExpand(section: any): boolean {
         z-index: 48;
         overflow-y: auto;
         transition: left 0.3s ease;
-        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+        box-shadow: none;
       }
 
       .mobile-sidebar.show {
         left: 0;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
       }
 
       /* When mobile menu is open, move the hamburger button to top-left of sidebar */
