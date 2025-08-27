@@ -1,0 +1,311 @@
+/* src/styles/custom.css */
+
+:root {
+  /* Pendulum gradient colors */
+  --pendulum-gradient: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+  --pendulum-gradient-reverse: linear-gradient(45deg, #8b6bb1 30%, #6a4c93 90%);
+  --background-gradient: linear-gradient(135deg, #1a1a2e 0%, #2d1b69 50%, #6a4c93 100%);
+
+  /* Light theme overrides */
+  --sl-color-accent-high: #e67e22;
+  --sl-color-accent: #f39c12;
+  --sl-color-accent-low: #f1c40f;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #f8f9fa;
+  --sl-color-gray-2: #e9ecef;
+  --sl-color-gray-3: #dee2e6;
+  --sl-color-gray-4: #ced4da;
+  --sl-color-gray-5: #adb5bd;
+  --sl-color-gray-6: #6c757d;
+  --sl-color-black: #212529;
+}
+
+/* Custom gradient text utility */
+.gradient-text {
+  background: var(--pendulum-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+/* Hero section styling */
+.hero-section {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid var(--sl-color-gray-3);
+}
+
+.hero-gradient {
+  background: var(--pendulum-gradient);
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.75rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+/* Code snippet styling */
+.code-preview {
+  background: var(--sl-color-gray-1);
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  position: relative;
+  overflow-x: auto;
+}
+
+.code-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--pendulum-gradient);
+}
+
+/* Feature cards */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: white;
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card h3 {
+  color: var(--sl-color-accent-high);
+  margin-bottom: 1rem;
+}
+
+/* Team page styling */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.team-member {
+  text-align: center;
+  background: white;
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-4px);
+}
+
+.team-member img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid transparent;
+  background: var(--pendulum-gradient);
+  padding: 3px;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-link {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--sl-color-gray-2);
+  color: var(--sl-color-gray-6);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-link:hover {
+  background: var(--pendulum-gradient);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Dashboard preview styling */
+.dashboard-preview {
+  background: var(--sl-color-gray-1);
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.dashboard-placeholder {
+  background: var(--sl-color-gray-3);
+  height: 200px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sl-color-gray-6);
+  font-style: italic;
+}
+
+/* Navigation enhancements */
+[data-theme='light'] {
+  --sl-nav-bg: rgba(255, 255, 255, 0.95);
+  --sl-nav-border: var(--sl-color-gray-3);
+}
+
+/* Sidebar accent */
+.sidebar nav ul li a[aria-current='page'] {
+  background: linear-gradient(90deg, rgba(230, 126, 34, 0.1) 0%, transparent 100%);
+  border-left: 3px solid var(--sl-color-accent-high);
+}
+
+/* Button variants */
+.btn-outline {
+  border: 2px solid var(--sl-color-accent-high);
+  color: var(--sl-color-accent-high);
+  background: transparent;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.btn-outline:hover {
+  background: var(--sl-color-accent-high);
+  color: white;
+  text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* MOBILE RESPONSIVE IMAGES - GLOBAL FIX */
+  /* Target content images but exclude header/nav images */
+  main img,
+  section img,
+  article img,
+  .case-study-content img,
+  .content-wrapper img,
+  img[src*=".gif"],
+  img[src*="assets/where-does-pendulum-fit/"],
+  img[src*="assets/design-implementation/"],
+  img[src*="assets/architecture/"],
+  img[src*="assets/background/"],
+  .example-code img,
+  .video-container img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 1.5rem auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Special handling for team member images - keep them circular */
+  .team-member img {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    margin: 0 auto 1rem auto !important;
+  }
+
+  /* Keep header/nav/footer images at their original size */
+  header img,
+  nav img,
+  footer img,
+  .header-title img,
+  .footer-social img,
+  #header img {
+    width: auto !important;
+    height: 40px !important;
+    margin: 0 !important;
+    display: inline-block !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even more aggressive responsive images for very small screens */
+  img,
+  [data-astro-cid] img,
+  img[src*=".gif"],
+  img[src*=".png"],
+  img[src*=".jpg"],
+  img[src*=".jpeg"],
+  img[src*="assets/"],
+  .example-code img,
+  .video-container img,
+  main img,
+  section img,
+  article img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 1rem auto !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
+  }
+}
+
+/* Nuclear option - override ALL image shadows */
+img {
+  box-shadow: none !important;
+}
+
+/* More specific targeting */
+[data-astro-cid-ismo7tuc] img,
+img[data-astro-cid-ismo7tuc],
+img[data-astro-cid-ismo7tuc7] {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Target by source path */
+img[src*="assets/background"] {
+  box-shadow: none !important;
+}
+
+/* Target all GIFs */
+img[src$=".gif"] {
+  box-shadow: none !important;
+}
