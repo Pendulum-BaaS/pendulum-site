@@ -5,6 +5,9 @@ function isActive(linkPath: string): boolean {
   if (linkPath === "/case-study/") {
     return pathname.startsWith("/case-study/");
   }
+  if (linkPath === "/team") {
+    return pathname === "/team" || pathname === "/team/";
+  }
   return pathname === linkPath;
 }
 ---
@@ -101,7 +104,7 @@ function isActive(linkPath: string): boolean {
   .social-icons::before {
     content: '';
     position: absolute;
-    left: -17px;
+    left: -15px;
     top: 50%;
     transform: translateY(-50%);
     width: 2px;
