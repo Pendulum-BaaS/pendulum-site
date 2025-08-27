@@ -309,3 +309,40 @@ img[src*="assets/background"] {
 img[src$=".gif"] {
   box-shadow: none !important;
 }
+
+/* Target ALL Astro component images with any data-astro-cid attribute */
+img[data-astro-cid-ismo7tuc],
+img[data-astro-cid-ismo7tuc1], 
+img[data-astro-cid-ismo7tuc2],
+img[data-astro-cid-ismo7tuc3],
+img[data-astro-cid-ismo7tuc4],
+img[data-astro-cid-ismo7tuc5],
+img[data-astro-cid-ismo7tuc6],
+img[data-astro-cid-ismo7tuc7],
+img[data-astro-cid-ismo7tuc8],
+img[data-astro-cid-ismo7tuc9] {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Universal selector for any Astro component image */
+img[data-astro-cid*="ismo7tuc"] {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Target any image with any astro component ID */
+img[data-astro-cid] {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Super specific targeting for your exact case */
+.case-study-content img[data-astro-cid*="ismo"] {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
