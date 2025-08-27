@@ -107,15 +107,17 @@ function shouldExpand(section: any): boolean {
         overflow: hidden;
         background: white;
         color: #666;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
       }
 
       body {
-        height: 100vh;
+        height: 100%;
         margin: 0;
         background: white;
         color: #666;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
         padding-top: 70px;
         display: flex;
         flex-direction: column;
@@ -134,16 +136,17 @@ function shouldExpand(section: any): boolean {
         flex: 1;
         display: flex;
         flex-direction: column;
+        padding-bottom: 70px;
         /* Default mobile-friendly values */
         height: auto;
-        min-height: calc(100vh - 70px);
+        min-height: calc(100vh - 70px - 80px);
         overflow: visible;
       }
 
       /* Desktop-specific container behavior */
       @media (min-width: 1025px) {
         .page-wrapper {
-          height: calc(100vh - 70px);
+          height: calc(100vh - 70px - 80px);
           overflow: hidden;
         }
       }
@@ -152,9 +155,11 @@ function shouldExpand(section: any): boolean {
       .case-study-container {
         display: grid;
         grid-template-columns: 300px 1fr;
+        flex: 1;
         /* Default mobile-friendly values */
-        height: auto;
-        min-height: calc(100vh - 70px);
+        /*height: auto;*/
+        /*min-height: calc(100vh - 70px);*/
+        min-height: auto;
         overflow: visible;
       }
 
@@ -168,7 +173,14 @@ function shouldExpand(section: any): boolean {
 
       /* Sidebar - Fixed position but within grid */
       .case-study-sidebar {
-        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        background: linear-gradient(
+          135deg,
+          #4a3269 0%,
+          #5a3f7e 25%,
+          #6a4c93 50%,
+          #7a6f9a 75%,
+          #8a7ca8 100%
+        );
         border-right: 1px solid rgba(0, 0, 0, 0.08);
         overflow-y: auto;
         overflow-x: hidden;
@@ -206,7 +218,14 @@ function shouldExpand(section: any): boolean {
         top: 85px;
         left: 1rem;
         z-index: 60;
-        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        background: linear-gradient(
+          135deg,
+          #4a3269 0%,
+          #5a3f7e 25%,
+          #6a4c93 50%,
+          #7a6f9a 75%,
+          #8a7ca8 100%
+        );
         color: white;
         border: none;
         border-radius: 8px;
@@ -270,7 +289,9 @@ function shouldExpand(section: any): boolean {
         z-index: 47;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
+        transition:
+          opacity 0.3s ease,
+          visibility 0.3s ease;
         pointer-events: none;
       }
 
@@ -287,7 +308,14 @@ function shouldExpand(section: any): boolean {
         left: -300px;
         width: 300px;
         height: calc(100vh - 70px);
-        background: linear-gradient(135deg, #4a3269 0%, #5a3f7e 25%, #6a4c93 50%, #7a6f9a 75%, #8a7ca8 100%);
+        background: linear-gradient(
+          135deg,
+          #4a3269 0%,
+          #5a3f7e 25%,
+          #6a4c93 50%,
+          #7a6f9a 75%,
+          #8a7ca8 100%
+        );
         z-index: 48;
         overflow-y: auto;
         transition: left 0.3s ease;
@@ -308,8 +336,17 @@ function shouldExpand(section: any): boolean {
       /* Yellow glow on hover when menu is open */
       .mobile-menu-toggle.open:hover {
         transform: translateY(-2px);
-        box-shadow: 0 0 20px rgba(241, 196, 15, 0.8), 0 6px 16px rgba(0, 0, 0, 0.2);
-        background: linear-gradient(135deg, #5a3f7e 0%, #6a4c93 25%, #7a6f9a 50%, #8a7ca8 75%, #9a8fb7 100%);
+        box-shadow:
+          0 0 20px rgba(241, 196, 15, 0.8),
+          0 6px 16px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(
+          135deg,
+          #5a3f7e 0%,
+          #6a4c93 25%,
+          #7a6f9a 50%,
+          #8a7ca8 75%,
+          #9a8fb7 100%
+        );
       }
 
       .mobile-sidebar .sidebar-content {
@@ -344,7 +381,13 @@ function shouldExpand(section: any): boolean {
       .mobile-sidebar .nav-item.active {
         background: rgba(255, 255, 255, 0.1);
         color: transparent;
-        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-image: linear-gradient(
+          135deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         font-weight: 600;
@@ -359,7 +402,13 @@ function shouldExpand(section: any): boolean {
       .mobile-sidebar .nav-item.parent.expanded {
         background: rgba(255, 255, 255, 0.1);
         color: transparent;
-        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-image: linear-gradient(
+          135deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
       }
@@ -373,13 +422,19 @@ function shouldExpand(section: any): boolean {
       }
 
       .mobile-sidebar .nav-children::before {
-        content: '';
+        content: "";
         position: absolute;
         left: -2px;
         top: 0;
         bottom: 0;
         width: 2px;
-        background: linear-gradient(180deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background: linear-gradient(
+          180deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
       }
 
       .mobile-sidebar .nav-children .anchor-link {
@@ -393,7 +448,13 @@ function shouldExpand(section: any): boolean {
       .mobile-sidebar .nav-children .anchor-link:hover {
         background: rgba(255, 255, 255, 0.1);
         color: transparent;
-        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-image: linear-gradient(
+          135deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         font-weight: 600;
@@ -403,7 +464,13 @@ function shouldExpand(section: any): boolean {
       .mobile-sidebar .nav-children .anchor-link.active {
         background: rgba(255, 255, 255, 0.1);
         color: transparent;
-        background-image: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background-image: linear-gradient(
+          135deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
         background-clip: text;
         -webkit-background-clip: text;
         font-weight: 600;
@@ -530,7 +597,13 @@ function shouldExpand(section: any): boolean {
       }
 
       .nav-button:hover {
-        background: linear-gradient(135deg, #e67e22 0%, #f39c12 30%, #f1c40f 70%, #f4d03f 100%);
+        background: linear-gradient(
+          135deg,
+          #e67e22 0%,
+          #f39c12 30%,
+          #f1c40f 70%,
+          #f4d03f 100%
+        );
         color: white;
         text-decoration: none;
         transform: translateY(-1px);
@@ -602,7 +675,7 @@ function shouldExpand(section: any): boolean {
           min-height: auto;
           overflow: visible;
         }
-        
+
         .case-study-sidebar {
           display: none;
         }
@@ -614,7 +687,7 @@ function shouldExpand(section: any): boolean {
         .mobile-sidebar-overlay {
           display: block;
         }
-        
+
         .case-study-content {
           padding: 2rem 8%;
           padding-top: 4rem;
@@ -668,7 +741,7 @@ function shouldExpand(section: any): boolean {
   </head>
   <body>
     <Header />
-    
+
     <!-- Mobile menu toggle button -->
     <button class="mobile-menu-toggle" id="mobileMenuToggle">
       <div class="hamburger">
@@ -680,7 +753,7 @@ function shouldExpand(section: any): boolean {
 
     <!-- Mobile sidebar overlay -->
     <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
-    
+
     <!-- Mobile sidebar -->
     <aside class="mobile-sidebar" id="mobileSidebar">
       <div class="sidebar-content">
@@ -728,7 +801,7 @@ function shouldExpand(section: any): boolean {
         <aside class="case-study-sidebar">
           <Sidebar />
         </aside>
-        
+
         <!-- Main content - Second grid item -->
         <main class="case-study-content">
           <div class="content-wrapper">
@@ -766,9 +839,6 @@ function shouldExpand(section: any): boolean {
               }
             </nav>
           </div>
-          
-          <!-- Footer inside content area -->
-          <Footer />
         </main>
       </div>
     </div>
@@ -776,45 +846,47 @@ function shouldExpand(section: any): boolean {
     <script>
       // Mobile menu functionality
       document.addEventListener("DOMContentLoaded", function () {
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileSidebar = document.getElementById('mobileSidebar');
-        const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+        const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+        const mobileSidebar = document.getElementById("mobileSidebar");
+        const mobileSidebarOverlay = document.getElementById(
+          "mobileSidebarOverlay",
+        );
 
         function toggleMobileMenu() {
-          const isOpen = mobileSidebar.classList.contains('show');
-          
+          const isOpen = mobileSidebar.classList.contains("show");
+
           if (isOpen) {
             // Close menu
-            mobileMenuToggle.classList.remove('open');
-            mobileSidebar.classList.remove('show');
-            mobileSidebarOverlay.classList.remove('show');
+            mobileMenuToggle.classList.remove("open");
+            mobileSidebar.classList.remove("show");
+            mobileSidebarOverlay.classList.remove("show");
           } else {
             // Open menu
-            mobileMenuToggle.classList.add('open');
-            mobileSidebar.classList.add('show');
-            mobileSidebarOverlay.classList.add('show');
+            mobileMenuToggle.classList.add("open");
+            mobileSidebar.classList.add("show");
+            mobileSidebarOverlay.classList.add("show");
           }
         }
 
         // Toggle menu when button is clicked
-        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+        mobileMenuToggle.addEventListener("click", toggleMobileMenu);
 
         // Close menu when overlay is clicked
-        mobileSidebarOverlay.addEventListener('click', toggleMobileMenu);
+        mobileSidebarOverlay.addEventListener("click", toggleMobileMenu);
 
         // Close menu when a navigation link is clicked
-        mobileSidebar.addEventListener('click', function(e) {
-          if (e.target.tagName === 'A') {
+        mobileSidebar.addEventListener("click", function (e) {
+          if (e.target.tagName === "A") {
             toggleMobileMenu();
           }
         });
 
         // Close menu on window resize if screen gets large enough
-        window.addEventListener('resize', function() {
+        window.addEventListener("resize", function () {
           if (window.innerWidth > 1024) {
-            mobileMenuToggle.classList.remove('open');
-            mobileSidebar.classList.remove('show');
-            mobileSidebarOverlay.classList.remove('show');
+            mobileMenuToggle.classList.remove("open");
+            mobileSidebar.classList.remove("show");
+            mobileSidebarOverlay.classList.remove("show");
           }
         });
 
