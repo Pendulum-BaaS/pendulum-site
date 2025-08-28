@@ -30,6 +30,12 @@ function isActive(linkPath: string): boolean {
     right: 0;
     z-index: 100;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  [data-theme="dark"] #header {
+    background: rgba(26, 26, 46, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .header-title {
@@ -51,6 +57,11 @@ function isActive(linkPath: string): boolean {
     font-size: 2rem;
     font-weight: 600;
     color: #4a5568;
+    transition: color 0.3s ease;
+  }
+
+  [data-theme="dark"] .header-title h2 {
+    color: #e2e8f0;
   }
 
   /* Desktop Navigation */
@@ -73,8 +84,16 @@ function isActive(linkPath: string): boolean {
     padding: 0.5rem 0;
   }
 
+  [data-theme="dark"] .header-link {
+    color: #9ca3af;
+  }
+
   .header-link:hover {
     color: #374151;
+  }
+
+  [data-theme="dark"] .header-link:hover {
+    color: #f3f4f6;
   }
 
   .header-link.selected {
@@ -132,6 +151,60 @@ function isActive(linkPath: string): boolean {
     transform: scale(1.05);
   }
 
+  /* Theme Toggle Button */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    margin-left: 0.5rem;
+  }
+
+  .theme-toggle:hover {
+    background: rgba(107, 114, 128, 0.1);
+    transform: scale(1.05);
+  }
+
+  [data-theme="dark"] .theme-toggle:hover {
+    background: rgba(156, 163, 175, 0.1);
+  }
+
+  .theme-toggle-icon {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+  }
+
+  /* Sun icon (visible in light mode) */
+  .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  [data-theme="dark"] .sun-icon {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+
+  /* Moon icon (visible in dark mode) */
+  .moon-icon {
+    position: absolute;
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+
+  [data-theme="dark"] .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
   /* Mobile Menu Toggle */
   .mobile-menu-toggle {
     display: none;
@@ -159,6 +232,10 @@ function isActive(linkPath: string): boolean {
     border-radius: 1px;
   }
 
+  [data-theme="dark"] .hamburger-line {
+    background-color: #e2e8f0;
+  }
+
   /* Mobile Menu Overlay */
   .mobile-menu-overlay {
     display: none;
@@ -172,6 +249,10 @@ function isActive(linkPath: string): boolean {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  [data-theme="dark"] .mobile-menu-overlay {
+    background: rgba(0, 0, 0, 0.7);
   }
 
   .mobile-menu-overlay.active {
@@ -191,8 +272,13 @@ function isActive(linkPath: string): boolean {
     z-index: 99;
     padding: 2rem 1.5rem;
     box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease;
+    transition: right 0.3s ease, background-color 0.3s ease;
     overflow-y: auto;
+  }
+
+  [data-theme="dark"] .mobile-menu {
+    background: #1a1a2e;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
   }
 
   .mobile-menu.active {
@@ -215,8 +301,17 @@ function isActive(linkPath: string): boolean {
     transition: color 0.2s ease;
   }
 
+  [data-theme="dark"] .mobile-menu-link {
+    color: #e2e8f0;
+    border-bottom-color: #374151;
+  }
+
   .mobile-menu-link:hover {
     color: #2d3748;
+  }
+
+  [data-theme="dark"] .mobile-menu-link:hover {
+    color: #f3f4f6;
   }
 
   .mobile-menu-link.selected {
@@ -242,6 +337,10 @@ function isActive(linkPath: string): boolean {
     border-top: 1px solid #e2e8f0;
   }
 
+  [data-theme="dark"] .mobile-social-icons {
+    border-top-color: #374151;
+  }
+
   .mobile-social-icon {
     height: 20px;
     width: 20px;
@@ -253,6 +352,30 @@ function isActive(linkPath: string): boolean {
   .mobile-social-icon:hover {
     opacity: 1;
     transform: scale(1.1);
+  }
+
+  /* Mobile theme toggle */
+  .mobile-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .mobile-theme-toggle:hover {
+    background: rgba(107, 114, 128, 0.1);
+    transform: scale(1.05);
+  }
+
+  [data-theme="dark"] .mobile-theme-toggle:hover {
+    background: rgba(156, 163, 175, 0.1);
   }
 
   /* Hamburger Animation */
@@ -352,6 +475,16 @@ function isActive(linkPath: string): boolean {
           class="social-icon"
         />
       </a>
+      
+      <!-- Theme Toggle Button -->
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="theme-toggle-icon sun-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+        </svg>
+        <svg class="theme-toggle-icon moon-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -405,12 +538,48 @@ function isActive(linkPath: string): boolean {
           class="mobile-social-icon"
         />
       </a>
+      
+      <!-- Mobile Theme Toggle -->
+      <button class="mobile-theme-toggle" id="mobileThemeToggle" aria-label="Toggle dark mode">
+        <svg class="theme-toggle-icon sun-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+        </svg>
+        <svg class="theme-toggle-icon moon-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </nav>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme preference or default to 'light'
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', currentTheme);
+
+    function toggleTheme() {
+      const currentTheme = htmlElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      htmlElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Add event listeners to both desktop and mobile theme toggles
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+    if (mobileThemeToggle) {
+      mobileThemeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Mobile menu functionality
     const mobileMenuToggle = document.getElementById('headerMobileMenuToggle');
     const mobileMenu = document.getElementById('headerMobileMenu');
     const mobileMenuOverlay = document.getElementById('headerMobileMenuOverlay');
