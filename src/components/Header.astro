@@ -102,7 +102,7 @@ function isActive(linkPath: string): boolean {
   }
 
   .social-icons::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -15px;
     top: 50%;
@@ -125,6 +125,7 @@ function isActive(linkPath: string): boolean {
     opacity: 0.7;
     transition: all 0.2s ease;
     object-fit: contain;
+    align-self: center;
   }
 
   .social-icon:hover {
@@ -171,7 +172,9 @@ function isActive(linkPath: string): boolean {
     z-index: 98;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
   }
 
   .mobile-menu-overlay.active {
@@ -316,7 +319,8 @@ function isActive(linkPath: string): boolean {
 
   <!-- Desktop Navigation -->
   <div class="header-links">
-    <a href="/" class={`header-link ${isActive("/") ? "selected" : ""}`}>Home</a>
+    <a href="/" class={`header-link ${isActive("/") ? "selected" : ""}`}>Home</a
+    >
     <a
       href="/case-study/"
       class={`header-link ${isActive("/case-study/") ? "selected" : ""}`}
@@ -328,19 +332,8 @@ function isActive(linkPath: string): boolean {
     >
       Our Team
     </a>
-    
+
     <div class="social-icons">
-      <a
-        href="https://www.linkedin.com/company/pendulum-baas"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img
-          src="/assets/linkedin-logo.svg"
-          alt="Pendulum LinkedIn"
-          class="social-icon"
-        />
-      </a>
       <a
         href="https://www.github.com/Pendulum-BaaS"
         target="_blank"
@@ -368,7 +361,9 @@ function isActive(linkPath: string): boolean {
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="headerMobileMenu">
     <div class="mobile-menu-links">
-      <a href="/" class={`mobile-menu-link ${isActive("/") ? "selected" : ""}`}>Home</a>
+      <a href="/" class={`mobile-menu-link ${isActive("/") ? "selected" : ""}`}
+        >Home</a
+      >
       <a
         href="/case-study/"
         class={`mobile-menu-link ${isActive("/case-study/") ? "selected" : ""}`}
@@ -410,53 +405,57 @@ function isActive(linkPath: string): boolean {
 </nav>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuToggle = document.getElementById('headerMobileMenuToggle');
-    const mobileMenu = document.getElementById('headerMobileMenu');
-    const mobileMenuOverlay = document.getElementById('headerMobileMenuOverlay');
+  document.addEventListener("DOMContentLoaded", function () {
+    const mobileMenuToggle = document.getElementById("headerMobileMenuToggle");
+    const mobileMenu = document.getElementById("headerMobileMenu");
+    const mobileMenuOverlay = document.getElementById(
+      "headerMobileMenuOverlay",
+    );
 
     if (!mobileMenuToggle || !mobileMenu || !mobileMenuOverlay) {
-      console.warn('Header mobile menu elements not found');
+      console.warn("Header mobile menu elements not found");
       return;
     }
 
     function toggleHeaderMobileMenu() {
-      const isActive = mobileMenu.classList.contains('active');
-      
+      const isActive = mobileMenu.classList.contains("active");
+
       if (isActive) {
         // Close menu
-        mobileMenuToggle.classList.remove('active');
-        mobileMenu.classList.remove('active');
-        mobileMenuOverlay.classList.remove('active');
-        document.body.style.overflow = '';
+        mobileMenuToggle.classList.remove("active");
+        mobileMenu.classList.remove("active");
+        mobileMenuOverlay.classList.remove("active");
+        document.body.style.overflow = "";
       } else {
         // Open menu
-        mobileMenuToggle.classList.add('active');
-        mobileMenu.classList.add('active');
-        mobileMenuOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        mobileMenuToggle.classList.add("active");
+        mobileMenu.classList.add("active");
+        mobileMenuOverlay.classList.add("active");
+        document.body.style.overflow = "hidden";
       }
     }
 
     // Toggle menu when hamburger is clicked
-    mobileMenuToggle.addEventListener('click', function(e) {
+    mobileMenuToggle.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
       toggleHeaderMobileMenu();
     });
 
     // Close menu when overlay is clicked
-    mobileMenuOverlay.addEventListener('click', toggleHeaderMobileMenu);
+    mobileMenuOverlay.addEventListener("click", toggleHeaderMobileMenu);
 
     // Close menu when a link is clicked
-    const mobileMenuLinks = document.querySelectorAll('#headerMobileMenu .mobile-menu-link');
-    mobileMenuLinks.forEach(link => {
-      link.addEventListener('click', toggleHeaderMobileMenu);
+    const mobileMenuLinks = document.querySelectorAll(
+      "#headerMobileMenu .mobile-menu-link",
+    );
+    mobileMenuLinks.forEach((link) => {
+      link.addEventListener("click", toggleHeaderMobileMenu);
     });
 
     // Close menu on window resize if screen gets large
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768 && mobileMenu.classList.contains("active")) {
         toggleHeaderMobileMenu();
       }
     });

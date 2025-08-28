@@ -49,10 +49,12 @@ const deploymentCode = `
       align-items: center;
       background: linear-gradient(
         180deg,
-        #f0ecff 0%,
-        #e8e0ff 25%,
-        #ddd0ff 50%,
-        #d0c0ff 75%,
+        #fefefe 0%,
+        #f8f6ff 15%,
+        #f0ecff 30%,
+        #e8e0ff 45%,
+        #ddd0ff 65%,
+        #d0c0ff 80%,
         #c2b0ff 100%
       );
     }
@@ -257,7 +259,8 @@ const deploymentCode = `
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
 
-    .example-code img {
+    .example-code img,
+    video {
       width: 100%;
       height: auto;
       border-radius: 12px;
@@ -378,10 +381,9 @@ const deploymentCode = `
           </p>
         </div>
         <div class="example-code">
-          <Code
-            code="THIS IS A PLACEHOLDER FOR MCP VISUAL"
-            lang="typescript"
-            theme="material-theme-palenight"
+          <img
+            src="/assets/mcp_realtime_monitoring_snippet.png"
+            alt="Pendulum MCP Usage"
           />
         </div>
       </div>
