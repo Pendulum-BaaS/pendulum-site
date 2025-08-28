@@ -80,8 +80,14 @@ $ npm run pendulum-backend:stop
 
 <CaseStudyLayout frontmatter={frontmatter}>
   <style>
-    h1, h2 {
-      background: linear-gradient(135deg, #1a1a2e 0%, #2d1b69 50%, #6a4c93 100%);
+    h1,
+    h2 {
+      background: linear-gradient(
+        135deg,
+        #1a1a2e 0%,
+        #2d1b69 50%,
+        #6a4c93 100%
+      );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -221,7 +227,24 @@ $ npm run pendulum-backend:stop
   </div>
 
   <p>
-    Conversely, deployments can be torn down and destroyed at any time with the <code
+    Once the application is deployed, developers can start the Pendulum Model
+    Context Protocol (MCP) server locally to get information about their
+    application's backend using natural language queries. Once the MCP server is
+    installed globally with <code>npm install -g @pendulum-baas/mcp</code>, AI
+    tools can connect to it by providing the URL for the Application Load
+    Balancer and the <code>JWT_SECRET</code> — both of which can be found in the
+    associated AWS account.
+  </p>
+
+  <div class="video-container">
+    <video controls width="100%" preload="metadata">
+      <source src="/assets/using-pendulum/mcp_usage.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <p>
+    Deployments can be torn down and destroyed at any time with the <code
       >destroy</code
     > command. This command will delete AWS CloudFormation stack associated with
     the deployment.
