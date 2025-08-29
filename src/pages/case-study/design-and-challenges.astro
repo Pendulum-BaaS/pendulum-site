@@ -460,6 +460,82 @@ const frontMatter = {
     alt="Admin Dashboard Dual-Stream Connection"
   />
 
+  <h2 id="bridging-ai-agents">Bridging AI Agents and Backend Management</h2>
+
+  <p>
+    We recognized that developers already use AI assistants for coding help but
+    can't effectively use them to get insights about their deployed backend
+    systems. The Model Context Protocol was perfect for extending AI workflows
+    to backend management — providing a standardized way for AI agents to
+    interact with deployed resources without building custom integrations for
+    each AI platform.
+  </p>
+  <p>
+    The Pendulum MCP server connects to deployments via HTTP and translates
+    natural language queries into specific backend operations. We implemented
+    five core tools:
+  </p>
+
+  <div class="table-container">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>check-health-status</code></td>
+          <td>
+            Get real-time insights into the health and status of both backend
+            services.
+          </td>
+        </tr>
+        <tr>
+          <td><code>get-active-users</code></td>
+          <td>
+            Returns the number of users currently connected to your
+            application.
+          </td>
+        </tr>
+        <tr>
+          <td><code>infer-schema</code></td>
+          <td>
+            Given a collection, infers and generates JSON that represents the
+            schema of the collection.
+          </td>
+        </tr>
+        <tr>
+          <td><code>validate-schema</code></td>
+          <td>
+            Given a collection and an expected schema, identifies any documents
+            in the collection that do not conform to the expected schema.
+            Returns <code>_id</code> values for those that do not match.
+          </td>
+        </tr>
+        <tr>
+          <td><code>start-realtime-logs</code></td>
+          <td>
+            Monitor and log all realtime events as they are broadcast out to
+            active users for a specified amount of time. Log file is
+            timestamped and written to user's local <code>/tmp</code>
+            directory.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Each tool generates admin JWT tokens for backend authentication and formats
+    responses as structured JSON that AI agents can interpret and present
+    conversationally. The server uses the stdio transport protocol to
+    communicate with AI clients. This allows seamless integration with existing
+    AI workflows without requiring additional network configuration or
+    authentication beyond the initial setup credentials.
+  </p>
+
   <style>
     /* General image styling */
     img {
