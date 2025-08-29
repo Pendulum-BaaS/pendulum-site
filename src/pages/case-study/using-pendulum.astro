@@ -76,6 +76,23 @@ const useEffect = `useEffect(() => {
 const npmScripts = `$ npm run pendulum-backend:start
 $ npm run pendulum-backend:stop
 `;
+
+const mcpConfig = `{
+  "mcpServers": {
+    "pendulum": {
+      "command": "pendulum-mcp",
+      "args": [
+        "--url",
+        "<your-alb-url>",
+        "--jwt-secret",
+        "<your-jwt-secret>",
+      ],
+      "env": {
+        "PATH": "<your-PATH-variable>",
+      },
+    },
+  },
+}`;
 ---
 
 <CaseStudyLayout frontmatter={frontmatter}>
@@ -227,23 +244,6 @@ $ npm run pendulum-backend:stop
   </div>
 
   <p>
-    Once the application is deployed, developers can start the Pendulum Model
-    Context Protocol (MCP) server locally to get information about their
-    application's backend using natural language queries. Once the MCP server is
-    installed globally with <code>npm install -g @pendulum-baas/mcp</code>, AI
-    tools can connect to it by providing the URL for the Application Load
-    Balancer and the <code>JWT_SECRET</code> — both of which can be found in the
-    associated AWS account.
-  </p>
-
-  <div class="video-container">
-    <video controls width="100%" preload="metadata">
-      <source src="/assets/using-pendulum/mcp_usage.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-
-  <p>
     Deployments can be torn down and destroyed at any time with the <code
       >destroy</code
     > command. This command will delete AWS CloudFormation stack associated with
@@ -259,6 +259,73 @@ $ npm run pendulum-backend:stop
       Your browser does not support the video tag.
     </video>
   </div>
+
+  <h2 id="mcp">AI-Powered Backend Management</h2>
+
+  <p>
+    The MCP server is distributed as a separate npm package that connects your
+    deployed Pendulum backend to AI agents. Install the package globally using <code
+      >npm install -g @pendulum-baas/mcp</code
+    > and configure your AI agent with data from your deployment:
+  </p>
+
+  <div class="example-code">
+    <Code code={mcpConfig} lang="javascript" theme="material-theme-palenight" />
+  </div>
+
+  <p>
+    Once your Pendulum backend is deployed, the MCP server enables natural
+    language interaction with your production systems through AI agents (e.g.,
+    Claude Desktop). After configuring the agent with your deployment’s ALB URL
+    and JWT secret, you can monitor and debug your backend through simple,
+    conversational queries.
+  </p>
+
+  <h3>Real-time System Monitoring</h3>
+  <p>
+    Developers can ask direct questions about their backend's current state:
+    <ul>
+      <li>
+        <em>"How many users are currently connected to my application?"</em>
+      </li>
+      <li><em>"Check the health status of my Pendulum services."</em></li>
+      <li>
+        <em>"Start monitoring my real-time events for the next 5 minutes."</em>
+      </li>
+    </ul>
+    <div class="video-container">
+      <video controls width="100%" preload="metadata">
+        <source src="/assets/using-pendulum/mcp_tools_1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </p>
+
+  <h3>Schema Management and Validation</h3>
+  <p>
+    The MCP server can analyze application data and help maintain consistency
+    across collections:
+    <ul>
+      <li>
+        <em
+          >"Generate schema as a JSON object for my <code>products</code> collection
+          based on existing data."</em
+        >
+      </li>
+      <li>
+        <em
+          >"Which documents in my <code>products</code> collection don't match the
+          expected schema?</em
+        >
+      </li>
+    </ul>
+    <div class="video-container">
+      <video controls width="100%" preload="metadata">
+        <source src="/assets/using-pendulum/mcp_tools_2.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </p>
 </CaseStudyLayout>
 
 <style>
