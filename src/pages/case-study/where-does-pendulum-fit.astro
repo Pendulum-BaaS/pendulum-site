@@ -212,7 +212,7 @@ export function TaskList() {
   </p>
 
   <img
-    src="/assets/where-does-pendulum-fit/four_main_components.gif"
+    src="/assets/where-does-pendulum-fit/five_main_components.gif"
     alt="Four Main Components of Pendulum"
   />
 
@@ -280,8 +280,30 @@ export function TaskList() {
 
   <img src="/assets/where-does-pendulum-fit/SDK.gif" alt="Pendulum SDK" />
 
+  <h3>AI Integration (MCP Server)</h3>
+
   <p>
-    Given our positioning in the BaaS landscape, here’s how Pendulum fits in:
+    The Model Context Protocol (MCP) server bridges Pendulum backends with AI
+    assistants (e.g., like Claude Desktop), enabling developers to gain insight
+    into their production systems through natural language queries. Developers
+    can simply ask "How many users are currently connected?" or "Generate a schema
+    for my `users` collection." and get answers through a familiar AI interface.
+  </p>
+
+  <img src="/assets/where-does-pendulum-fit/MCP.gif" alt="Pendulum MCP" />
+
+  <p>
+    The MCP server provides backend system monitoring, schema inference and
+    validation, and real-time event snapshots — all accessible through conversational
+    AI interfaces that developers are already using for coding assistance.
+  </p>
+
+   <h2 id="positioning">Pendulum in the BaaS Space</h2>
+
+  <p>
+    With these core components, Pendulum is designed for solo developers and small
+    teams who want to build reactive applications quickly without writing custom
+    backend code. Here's how Pendulum compares to other popular BaaS solutions:
   </p>
 
   <img
@@ -338,7 +360,7 @@ export function TaskList() {
       max-width: 700px;
     }
 
-    img[src*="four_main_components"] {
+    img[src*="five_main_components"] {
       max-width: 700px;
     }
 
@@ -351,6 +373,10 @@ export function TaskList() {
     }
 
     img[src*="SDK"] {
+      max-width: 700px;
+    }
+
+    img[src*="MCP"] {
       max-width: 700px;
     }
 
